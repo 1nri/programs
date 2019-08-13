@@ -14,6 +14,8 @@ package passWordManager;
  * This class is the main module as the
  * name states. There might not be too 
  * many changes here.
+ * 
+ * edited 22.7.2019 : testing github
  */
 
 public class PassWordManagerMain {
