@@ -1,4 +1,4 @@
-package exercise.bankproject;
+package tests.bankproject;
 
 import exercise.bankproject.DynamicArray;
 
