@@ -20,7 +20,11 @@ import java.util.Scanner;
 public class JavaProgramInput {
     
     private static DynamicArray fileContent;
-    public static void main(String[] input)
+
+    /**
+     *
+     */
+    public static void useInput()
     {
         String fname;
         
@@ -78,7 +82,7 @@ public class JavaProgramInput {
             
             /* always close the file after use */
             bufferedReader.close();
-            JavaProgramOutput.JavaProgramOutput(fileContent);
+            JavaProgramOutput.printStatement(fileContent);
             fileContent = null;
         }
         catch(IOException ex)

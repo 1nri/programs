@@ -23,7 +23,7 @@ public class JavaProgramOutput {
      *
      * @param input
      */
-    public static void JavaProgramOutput(DynamicArray input)
+    public static void printStatement(DynamicArray input)
     {
         String fname;
         Scanner scan = new Scanner(System.in);
