@@ -1,6 +1,5 @@
 package exercise.bankproject;
 import java.util.Calendar;
-import java.util.Date;
 
 /*
  * To change this license header, choose License Headers in Project Properties.
@@ -29,20 +28,20 @@ public class BankStatement {
     private int totalDeposits;
     private String ownerOfBankAccount;
     private boolean test;
-    private final String firstDateOutput;
-    private final String lastDateOutput;
-    private final String statementNameOutput;
-    private final String charSetOutput;
-    private final String mediaTypeOutput;
-    private final String numberOfTransactionsOutput;
-    private final String valueOfTransactionsOutput;
-    private final String bankNameOutput;
-    private final String addressOfBankOutput;
-    private final String phoneNumberOfBankOutput;
-    private final String totalAmountOfWithdrawalsOutput;
-    private final String totalAmountOfDepositsOutput;
-    private final String contentOfStatementOutput;
-    private final String ownerOfBankAccountOutput;
+    private String firstDateOutput;
+    private String lastDateOutput;
+    private String statementNameOutput;
+    private String charSetOutput;
+    private String mediaTypeOutput;
+    private String numberOfTransactionsOutput;
+    private String valueOfTransactionsOutput;
+    private String bankNameOutput;
+    private String addressOfBankOutput;
+    private String phoneNumberOfBankOutput;
+    private String totalAmountOfWithdrawalsOutput;
+    private String totalAmountOfDepositsOutput;
+    private String contentOfStatementOutput;
+    private String ownerOfBankAccountOutput;
     
     public BankStatement(){
         this.ownerOfBankAccountOutput = "The owner of the bank accounts is : ";
@@ -59,6 +58,7 @@ public class BankStatement {
         this.statementNameOutput = "The name of this statement is : ";
         this.lastDateOutput = "The last date of this statement is : ";
         this.firstDateOutput = "The first date of this statement is : ";
+        this.test = true;
         contentOfStatement = new DynamicArray();
         firstDateOfStatement = null;
         lastDateOfStatement = null;
@@ -72,21 +72,23 @@ public class BankStatement {
     }
     
     public BankStatement(Calendar a, Calendar b, String c, String d, String e, int f, String g, String h, String i, DynamicArray j, int k, int l, String m, boolean test){
-        this.ownerOfBankAccountOutput = "The owner of the bank accounts is : ";
-        this.contentOfStatementOutput = "The content of this statement is : ";
-        this.totalAmountOfDepositsOutput = "The total amounts of deposits in this statement is : ";
-        this.totalAmountOfWithdrawalsOutput = "The total amount of withdrawals in this statement is : ";
-        this.phoneNumberOfBankOutput = "The phone number of the bank providing this statement is : ";
-        this.addressOfBankOutput = "The street address of the bank providing this statement is : ";
-        this.bankNameOutput = "The name of the bank providing this statement is : ";
-        this.valueOfTransactionsOutput = "The value of transactions on this statement is : ";
-        this.numberOfTransactionsOutput = "The number of transactions on this statement is : ";
-        this.mediaTypeOutput = "The media type of this statement is : ";
-        this.charSetOutput = "The character set of this statement is : ";
-        this.statementNameOutput = "The name of this statement is : ";
-        this.lastDateOutput = "The last date of this statement is : ";
-        this.firstDateOutput = "The first date of this statement is : ";
-        this.test = test;
+        if(test == true){
+            this.ownerOfBankAccountOutput = "The owner of the bank accounts is : ";
+            this.contentOfStatementOutput = "The content of this statement is : ";
+            this.totalAmountOfDepositsOutput = "The total amounts of deposits in this statement is : ";
+            this.totalAmountOfWithdrawalsOutput = "The total amount of withdrawals in this statement is : ";
+            this.phoneNumberOfBankOutput = "The phone number of the bank providing this statement is : ";
+            this.addressOfBankOutput = "The street address of the bank providing this statement is : ";
+            this.bankNameOutput = "The name of the bank providing this statement is : ";
+            this.valueOfTransactionsOutput = "The value of transactions on this statement is : ";
+            this.numberOfTransactionsOutput = "The number of transactions on this statement is : ";
+            this.mediaTypeOutput = "The media type of this statement is : ";
+            this.charSetOutput = "The character set of this statement is : ";
+            this.statementNameOutput = "The name of this statement is : ";
+            this.lastDateOutput = "The last date of this statement is : ";
+            this.firstDateOutput = "The first date of this statement is : ";
+            this.test = test;
+        }
         if(setFirstDateOfStatement(a) && setLastDateOfStatement(b) && setNameOfStatement(c) && 
                 setCharSet(d) && setMediaType(e) && setNumberOfTransactions(f) && setNameOfBank(g) &&
                 setStreetAddress(h) && setPhoneNumber(i) && setContentOfStatement(j) &&
@@ -334,21 +336,24 @@ public class BankStatement {
 
     @Override
     public String toString(){
-        String output = firstDateOutput + getFirstDate() + System.lineSeparator() + 
-                lastDateOutput + getLastDate() + System.lineSeparator() + 
-                statementNameOutput + getNameOfStatement() + System.lineSeparator() + 
-                charSetOutput + getCharSet() + System.lineSeparator() + 
-                mediaTypeOutput + getMediaTypeOfStatement() + System.lineSeparator() + 
-                bankNameOutput + getNameOfBank() + System.lineSeparator() + 
-                addressOfBankOutput + getStreetAddressOfBank() + System.lineSeparator() + 
-                phoneNumberOfBankOutput + getPhoneNumberOfBank() + System.lineSeparator() + 
-                ownerOfBankAccountOutput + getOwnerOfBankAccount() + System.lineSeparator() + 
-                numberOfTransactionsOutput + getNumberOfTransactions() + System.lineSeparator() + 
-                valueOfTransactionsOutput + getValueOfTransactions() + System.lineSeparator() + 
-                totalAmountOfWithdrawalsOutput + getTotalAmountOfWithdrawals() + System.lineSeparator() + 
-                totalAmountOfDepositsOutput + getTotalAmountOfDeposits() + System.lineSeparator() + 
-                contentOfStatementOutput + getContentOfStatement() + System.lineSeparator();
-        return output;
+        if(this.test == true)
+        {
+            String output = firstDateOutput + getFirstDate() + System.lineSeparator() + 
+                    lastDateOutput + getLastDate() + System.lineSeparator() + 
+                    statementNameOutput + getNameOfStatement() + System.lineSeparator() + 
+                    charSetOutput + getCharSet() + System.lineSeparator() + 
+                    mediaTypeOutput + getMediaTypeOfStatement() + System.lineSeparator() + 
+                    bankNameOutput + getNameOfBank() + System.lineSeparator() + 
+                    addressOfBankOutput + getStreetAddressOfBank() + System.lineSeparator() + 
+                    phoneNumberOfBankOutput + getPhoneNumberOfBank() + System.lineSeparator() + 
+                    ownerOfBankAccountOutput + getOwnerOfBankAccount() + System.lineSeparator() + 
+                    numberOfTransactionsOutput + getNumberOfTransactions() + System.lineSeparator() + 
+                    valueOfTransactionsOutput + getValueOfTransactions() + System.lineSeparator() + 
+                    totalAmountOfWithdrawalsOutput + getTotalAmountOfWithdrawals() + System.lineSeparator() + 
+                    totalAmountOfDepositsOutput + getTotalAmountOfDeposits() + System.lineSeparator() + 
+                    contentOfStatementOutput + getContentOfStatement() + System.lineSeparator();
+            return output;
+        }else return "This is not a test, so no direct printing.";
     }
 
 }
