@@ -11,9 +11,14 @@ import java.util.Calendar;
 /**
  *
  * @author henrijuvonen
+ * 
+ * edited 16.0.2019
+ * reformatting. works perfectly.
  */
 public class SingleTransactionTest {
-    public static void main(String args[]){
+    public static void main(String args[])
+    {
+        System.out.println("The single transaction test is about to begin.");
         /**
          * setTypeOfPayment(a) && setRecipient(b) && setPayee(c) && 
                 setNameOfStatement(d) && setDateOfPayment(e) && 
@@ -45,5 +50,6 @@ public class SingleTransactionTest {
         boolean test = false;
         SingleTransaction testTransaction = new SingleTransaction(a, b, c, d, e, f, g, test);
         System.out.println(testTransaction.toString());
+        System.out.println("The single statement test has finished.");
     }
 }

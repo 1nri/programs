@@ -13,20 +13,28 @@ package exercise.bankproject;
  * edited on 1.9.2019
  * done corrections and formatting, added data for understanding order of items
  * which should be useful for peeking out what's inside the array
+ * 
+ * edited on 16.9.2019
+ * edited the comments, formatted the code. this works perfectly and looks 
+ * perfect now, not so much like an exercise.
  */
 public class DynamicArray {
 
-    private int N; /* The current size of the array. */
-    private ItemOfDynamicArray[] A; /* The array for holding the objects of the stack. */
+    /* 
+     * N = The current size of the array. 
+     * ItemOfDynamicArray = The array for holding the objects of the stack.
+     */
+    private int N; 
+    private ItemOfDynamicArray[] A;
     
     /* n: the number of items in the stack.
-     * We do not keep a separate variable 'top' for the index of the last stack
-     * item because top = n-1.
+     * top = n-1.
      */
-
     private int n;
     
-    /* Constructor: initializes N to 1, n to 0 and allocates a size-N array A. */
+    /* Constructor: initializes N to 1, n to 0 and allocates a size-N 
+     * array A. 
+     */
     public DynamicArray()
     {
         N = 1;
@@ -53,24 +61,24 @@ public class DynamicArray {
 
 
 
-    /************** EXERCISES ARE BELOW **************/
+    /**************
+     * @param x 
+     **************/
 
 
 
-    /* Insert Object x on top of the stack (= to index n).
-     * If n = N, move the stack into a new array that is twice
-     * as large (e.g. double N, create a new size N array, move
-     * the stack items from old A, and replace A by the new array).
-     */
+    
 
     public void push( Object x )
     {
-    /* push(object x): lisää objektin x pinon viimeisen alkion perään. Jos taulukossa oli
-     * jo n = N alkiota, siirtää pinon uuteen, kaksi kertaa isompaan taulukkoon
-     * (samalla N ← 2N).
-     */
 
+    /* push(object x) : Inserts Object x on top of the stack (= to index n).
+     * If n = N, moves the stack into a new array that is twice
+     * as large (e.g. double N, creates a new size N array, moves
+     * the stack items from old A and replaces A by the new array).
+     */
         ItemOfDynamicArray item = new ItemOfDynamicArray(x, n);
+        
         if(n == N)
         {
             N = 2*N;
@@ -79,19 +87,25 @@ public class DynamicArray {
             A = new ItemOfDynamicArray[N];
             System.arraycopy(h, 0, A, 0, n);
         }
+        
         A[n] = item;
         n = n+1;
     }
 
+    /* slide() : returns object from the bottom of the stack, slides one out
+     * 
+     */
     public Object slide()
     {
         Object o = null;
 
         if(!isEmpty()){
             o = A[0];
+            
             for(int i = 0; i < n; i++){
                 A[i] = A[i+1];
             }
+            
             n--;
         }
 
@@ -102,21 +116,18 @@ public class DynamicArray {
             A = new ItemOfDynamicArray[N];
             System.arraycopy(h, 0, A, 0, n);
         }
+        
         return o;
     }
 
-    /* Remove Object x from top of the stack (= from index n-1) and return it.
-     * Returns null is the stack is empty.
-     * If after the removal n = N/4 and N >= 2, move the stack into a new array
-     * that is half as large (e.g. divide N by two, create a new size N array, move
-     * the stack items from old A, and replace A by the new array).
-     */
     public ItemOfDynamicArray pop ()
     {
 
-    /* pop(): poistaa ja palauttaa pinon viimeisen alkion. Jos taulukossa on poiston
-     * jälkeen = ⌊N/4⌋ alkiota ja N ≥ 2, siirtää pinon uuteen kaksi kertaa pienempään
-     * taulukkoon (samalla N ← N/2).
+    /* pop(): Removes Object x from top of the stack (= from index n-1) and returns it.
+     * Returns null is the stack is empty.
+     * If after the removal n = N/4 and N >= 2, moves the stack into a new array
+     * that is half as large (e.g. divides N by two, creates a new size N array, moves
+     * the stack items from old A, and replaces A by the new array).
      */
 
         ItemOfDynamicArray o = null;
@@ -128,7 +139,8 @@ public class DynamicArray {
             n = n-1;
         }
 
-        if(n == N/4 && N >= 2){
+        if(n == N/4 && N >= 2)
+        {
             N = N/2;
             Object[] h = new Object[n];
             System.arraycopy(A, 0, h, 0, n);
@@ -139,9 +151,13 @@ public class DynamicArray {
         return o;
     }
     
-    public ItemOfDynamicArray peek(int n){
+    public ItemOfDynamicArray peek(int n)
+    {
+    
         if(this.n>=n && n >= 0){
             return A[n];
-        }else return null;
+        }
+        
+        else return null;
     }
 }

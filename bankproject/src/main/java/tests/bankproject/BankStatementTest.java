@@ -12,11 +12,16 @@ import java.util.Calendar;
 /**
  *
  * @author henrijuvonen
+ * 
+ * edited 16.9.2019
+ * reformatting. works perfectly.
  */
-public class BankStatementTest {
+public class BankStatementTest 
+{
     
     public static void main(String args[])
     {
+        System.out.println("The bank statement test is about to begin.");
         // Calendar's months begin from 0??
         Calendar a = Calendar.getInstance();
         a.set(2017, 7, 1);
@@ -44,6 +49,7 @@ public class BankStatementTest {
         BankStatement testStatement;
         testStatement = new BankStatement(a, b, c, d, e, f, g, h, i, j, k, l, m, true);
         System.out.println(testStatement);
+        System.out.println("The bank statement test has finished.");
     }
     
 }

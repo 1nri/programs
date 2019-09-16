@@ -10,9 +10,15 @@ import java.util.Calendar;
 /**
  *
  * @author henrijuvonen
+ * 
+ * edited 16.9.2019
+ * reformatting, added comments
  */
 public class SingleTransaction {
     
+    /**
+     * necessary variables to store data of transaction
+     */
     private char typeOfPayment;
     private String recipient;
     private String payee;
@@ -30,7 +36,8 @@ public class SingleTransaction {
     private final String numberOfOrderOnStatementOutput;
     private final String testValueOutput;
     
-    public SingleTransaction(){
+    public SingleTransaction()
+    {
         this.dateOfPayment = null;
         this.recipient = null;
         this.payee = null;
@@ -50,7 +57,8 @@ public class SingleTransaction {
             
     }
     
-    public SingleTransaction(char a, String b, String c, String d, Calendar e, double f, int g, boolean test){
+    public SingleTransaction(char a, String b, String c, String d, Calendar e, double f, int g, boolean test)
+    {
         setTestValue(test);
         typeOfPaymentOutput = "The type of this payment is : ";
         recipientOutput = "The recipient of this payment is : ";
@@ -69,29 +77,37 @@ public class SingleTransaction {
         else System.out.println("Couldn't create bank statement with provided input.");
     }
     
-    private boolean setTestValue(boolean t){
+    private boolean setTestValue(boolean t)
+    {
         this.test = t;
         return true;
     }
     
-    public boolean getTestValue(){
+    public boolean getTestValue()
+    {
         return this.test;
     }
     
-    private boolean setTypeOfPayment(char s){
-        if(s == 'd' || s == 'w'){
+    private boolean setTypeOfPayment(char s)
+    {
+        if(s == 'd' || s == 'w')
+        {
             this.typeOfPayment = s;
             return true;
         }
-        else if(!this.test){
+        
+        else if(!this.test)
+        {
             System.out.println("Couldn't initialize type of payment with value: "
             + s + System.lineSeparator() + "The value must be 'w' or 'd'.");
             return false;
         }
+        
         else return false;
     }
     
-    public char getTypeOfPayment(){
+    public char getTypeOfPayment()
+    {
         return this.typeOfPayment;
     }
     

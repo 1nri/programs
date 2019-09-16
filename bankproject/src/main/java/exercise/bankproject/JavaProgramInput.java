@@ -16,9 +16,16 @@ import java.util.Scanner;
  * 
  * This is copied and modified version of the program example at 
  * https://codescracker.com/java/program/java-program-read-and-display-file.htm
+ * 
+ * edited 16.9.2019
+ * reformatting, commenting
  */
-public class JavaProgramInput {
+public class JavaProgramInput 
+{
     
+    /**
+     * DynamicArray is what we use as means of storage.
+     */
     private static DynamicArray fileContent;
 
     /**
@@ -45,6 +52,7 @@ public class JavaProgramInput {
         /* this will reference only one line at a time */
         fileContent = new DynamicArray();
         String line = null;
+        
         try
         {
             /* FileReader reads text files in the default encoding */
@@ -85,6 +93,7 @@ public class JavaProgramInput {
             JavaProgramOutput.printStatement(fileContent);
             fileContent = null;
         }
+        
         catch(IOException ex)
         {
             System.out.println("Error reading file named '" + fname + "'");
