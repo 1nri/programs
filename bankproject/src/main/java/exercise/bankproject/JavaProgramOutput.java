@@ -24,10 +24,12 @@ public class JavaProgramOutput
 {
 
     /**
-     *
+     * this is used to print out the stored bank statement, useful for a lot of 
+     * stuff in addition to testing
      * @param input
+     * @param t
      */
-    public static void printStatement(DynamicArray input)
+    public static void printStatement(DynamicArray input, boolean t)
     {
         String fname;
         Scanner scan = new Scanner(System.in);
@@ -72,7 +74,12 @@ public class JavaProgramOutput
             
             // always close the file
             bufferedWriter.close();
-            input = null;
+            
+            if(t==true)
+            {
+                input = null;
+            }
+            
         }
         
         catch(IOException ex)

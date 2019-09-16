@@ -51,5 +51,4 @@ public class BankStatementTest
         System.out.println(testStatement);
         System.out.println("The bank statement test has finished.");
     }
-    
 }

@@ -19,6 +19,8 @@ import java.util.Scanner;
  * 
  * edited 16.9.2019
  * reformatting, commenting
+ * added alternate use of input where a DynamicArray is returned back to the 
+ * calling module
  */
 public class JavaProgramInput 
 {
@@ -29,18 +31,21 @@ public class JavaProgramInput
     private static DynamicArray fileContent;
 
     /**
-     *
+     * the main logic, this reads the input and tries to extract important parts
+     * of information from it
+     * @param name
+     * @param t
      */
-    public static void useInput()
+    public static void useInput(String name, boolean t)
     {
-        String fname;
-        
-        // this is a test file, replace this value if some other file is needed
-        fname = "/Users/henrijuvonen/Documents/omat_roskat/banking_proj/engine-1.html";
+        String fname = name;
         
         // Testing some of the logic, namely extraction of filename
-        System.out.println("Starting program, received the following"
+        if(t==true)
+        {
+            System.out.println("Starting program, received the following"
                 + " file: " + fname);
+        }
         
         Scanner scan = new Scanner(System.in);
         
@@ -90,7 +95,7 @@ public class JavaProgramInput
             
             /* always close the file after use */
             bufferedReader.close();
-            JavaProgramOutput.printStatement(fileContent);
+            JavaProgramOutput.printStatement(fileContent, t);
             fileContent = null;
         }
         
@@ -98,5 +103,78 @@ public class JavaProgramInput
         {
             System.out.println("Error reading file named '" + fname + "'");
         }
+    }
+    
+    /**
+     * alternative functionality, useful when not testing
+     * @param name
+     * @param t
+     * @param a
+     * @return 
+     */
+    public static DynamicArray useInput(String name, boolean t, DynamicArray a)
+    {
+        String fname = name;
+        
+        // Testing some of the logic, namely extraction of filename
+        if(t==true)
+        {
+            System.out.println("Testing alternate use of input.");
+            System.out.println("Starting program, received the following"
+                + " file: " + fname);
+        }
+        
+        Scanner scan = new Scanner(System.in);
+        
+        /* this will reference only one line at a time */
+        fileContent = a;
+        
+        try
+        {
+            /* FileReader reads text files in the default encoding */
+            FileReader fileReader = new FileReader(fname);
+            
+            try ( /* always wrap the FileReader in BufferedReader */ BufferedReader bufferedReader = new BufferedReader(fileReader)) {
+                int lineCounter = 0;
+                String line = bufferedReader.readLine();
+                
+                do {
+                    // you might want to try this at some point:
+                    line = line.replaceAll("&nbsp;"," ");
+                    
+                    /**
+                     * this will further reduce blank spaces along the stored
+                     * lines of xml
+                     */
+                    if(!line.equals(" ") && !line.isBlank())
+                    {
+                        fileContent.push(line);
+                    }
+                    line = bufferedReader.readLine();
+                } while (line != null);
+                
+            }
+            
+            /* always close the file after use */
+            fileReader.close();
+            
+            if(t==true)
+            {
+                JavaProgramOutput.printStatement(fileContent, t);
+            }
+            
+        }
+        
+        catch(IOException ex)
+        {
+            System.out.println("Error reading file named '" + fname + "'");
+            return null;
+        }
+        
+        if(t==true){
+            System.out.println("Testing use of input has completed.");
+        }
+        
+        return fileContent;
     }
 }

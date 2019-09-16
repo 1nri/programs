@@ -18,21 +18,24 @@ package exercise.bankproject;
  * edited the comments, formatted the code. this works perfectly and looks 
  * perfect now, not so much like an exercise.
  */
-public class DynamicArray {
+public class DynamicArray 
+{
 
-    /* 
+    /**
      * N = The current size of the array. 
      * ItemOfDynamicArray = The array for holding the objects of the stack.
      */
     private int N; 
     private ItemOfDynamicArray[] A;
     
-    /* n: the number of items in the stack.
+    /**
+     * n: the number of items in the stack.
      * top = n-1.
      */
     private int n;
     
-    /* Constructor: initializes N to 1, n to 0 and allocates a size-N 
+    /**
+     * Constructor: initializes N to 1, n to 0 and allocates a size-N 
      * array A. 
      */
     public DynamicArray()
@@ -43,7 +46,10 @@ public class DynamicArray {
     }
 
 
-    /* Returns true if stack is empty, and false otherwise. */
+    /** 
+     * Returns true if stack is empty, and false otherwise. 
+     * @return boolean
+     */
     public boolean isEmpty()
     {
         return n == 0;
@@ -51,32 +57,24 @@ public class DynamicArray {
 
 
 
-    /* Returns the current size of the array A. */
+    /**
+     * Returns the current size of the array A. 
+     * @return int
+     */
     public int arraySize()
     {
         return N;
     }
 
-
-
-
-
-    /**************
-     * @param x 
-     **************/
-
-
-
-    
-
-    public void push( Object x )
-    {
-
-    /* push(object x) : Inserts Object x on top of the stack (= to index n).
+    /**
+     * push(object x) : Inserts Object x on top of the stack (= to index n).
      * If n = N, moves the stack into a new array that is twice
      * as large (e.g. double N, creates a new size N array, moves
      * the stack items from old A and replaces A by the new array).
+     * @param x 
      */
+    public void push( Object x )
+    {
         ItemOfDynamicArray item = new ItemOfDynamicArray(x, n);
         
         if(n == N)
@@ -92,24 +90,28 @@ public class DynamicArray {
         n = n+1;
     }
 
-    /* slide() : returns object from the bottom of the stack, slides one out
-     * 
+    /**
+     * slide() : returns object from the bottom of the stack ie. slides one out
+     * @return Object
      */
     public Object slide()
     {
         Object o = null;
 
-        if(!isEmpty()){
+        if(!isEmpty())
+        {
             o = A[0];
             
-            for(int i = 0; i < n; i++){
+            for(int i = 0; i < n; i++)
+            {
                 A[i] = A[i+1];
             }
             
             n--;
         }
 
-        if(n == N/4 && N >= 2){
+        if(n == N/4 && N >= 2)
+        {
             N = N/2;
             Object[] h = new Object[n];
             System.arraycopy(A, 0, h, 0, n);
@@ -120,16 +122,17 @@ public class DynamicArray {
         return o;
     }
 
-    public ItemOfDynamicArray pop ()
-    {
-
-    /* pop(): Removes Object x from top of the stack (= from index n-1) and returns it.
+    /**
+     * pop(): Removes Object x from top of the stack (= from index n-1) and returns it.
      * Returns null is the stack is empty.
      * If after the removal n = N/4 and N >= 2, moves the stack into a new array
      * that is half as large (e.g. divides N by two, creates a new size N array, moves
      * the stack items from old A, and replaces A by the new array).
+     * 
+     * @return ItemOfDynamicArray
      */
-
+    public ItemOfDynamicArray pop ()
+    {
         ItemOfDynamicArray o = null;
 
         if(!isEmpty())
@@ -151,10 +154,18 @@ public class DynamicArray {
         return o;
     }
     
+    /**
+     * peek(int) : provides functionality for checking what item is store on a 
+     * particular index of this DynamicArray
+     * 
+     * @param n
+     * @return ItemOfDynamicArray
+     */
     public ItemOfDynamicArray peek(int n)
     {
     
-        if(this.n>=n && n >= 0){
+        if(this.n>=n && n >= 0)
+        {
             return A[n];
         }
         
