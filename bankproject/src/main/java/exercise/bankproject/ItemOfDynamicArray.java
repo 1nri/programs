@@ -9,18 +9,23 @@ package exercise.bankproject;
  *
  * @author henrijuvonen
  * 
+ * edited 16.9.2019
+ * reformatting
  */
-public class ItemOfDynamicArray extends Object{
+public class ItemOfDynamicArray extends Object
+{
     private final Object item;
     private final int location;
     
-    public ItemOfDynamicArray(Object o, int loc){
+    public ItemOfDynamicArray(Object o, int loc)
+    {
         item = o;
         location = loc;
     }
     
     @Override
-    public String toString(){
+    public String toString()
+    {
         return "This is " + item + " from location :" + this.location 
                 + System.lineSeparator();
     }

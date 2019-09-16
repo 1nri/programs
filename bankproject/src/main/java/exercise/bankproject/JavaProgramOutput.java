@@ -16,8 +16,12 @@ import java.util.Scanner;
  * 
  * This is copied and modified version of the program example at 
  * https://codescracker.com/java/program/java-program-write-to-file.htm
+ * 
+ * edited 16.9.2019
+ * reformatting
  */
-public class JavaProgramOutput {
+public class JavaProgramOutput 
+{
 
     /**
      *
@@ -70,6 +74,7 @@ public class JavaProgramOutput {
             bufferedWriter.close();
             input = null;
         }
+        
         catch(IOException ex)
         {
             System.out.println("Error writing to file named '" +fname+ "' ..!!");
