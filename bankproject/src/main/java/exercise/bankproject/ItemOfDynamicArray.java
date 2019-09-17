@@ -11,6 +11,10 @@ package exercise.bankproject;
  * 
  * edited 16.9.2019
  * reformatting
+ * 
+ * edited 17.9.2019
+ * added new method toString() with boolean parameter in order to provide testing
+ * improvements
  */
 public class ItemOfDynamicArray extends Object
 {
@@ -23,8 +27,14 @@ public class ItemOfDynamicArray extends Object
         location = loc;
     }
     
+    
     @Override
     public String toString()
+    {
+        return item + "";
+    }
+    
+    public String toString(boolean t)
     {
         return "This is " + item + " from location :" + this.location 
                 + System.lineSeparator();

@@ -15,6 +15,9 @@ package exercise.bankproject;
  * continued on the lost thought to get this reading xml formatted bank 
  * statements from Aktia.
  * 
+ * edited 17.9.2019
+ * started on the sentence inspector
+ * 
  */
 public class StatementParser 
 {
@@ -42,14 +45,17 @@ public class StatementParser
              * this was the first idea, to just read the file line by line
              * sentence = scan.nextLine();
              */
-            Object test = file.slide();
+            System.out.println("here we are starting to inspect soon");
+            ItemOfDynamicArray test = file.slide();
             
             /**
              * not null items can be interpreted char by char or word by word
              */
             if(test != null)
             {
-                sentence = test.toString();
+                System.out.println("calling the inspector, item was not null");
+                inspectSentence(test.toString(), true);
+                sentence = test.toString(true);
                 /**
                  * this was the first idea, to read the file line by line
                  * bufferedWriter.write(sentence);
@@ -67,12 +73,66 @@ public class StatementParser
         }
     }
     
-    private void InspectSentence(String s)
+    private static void inspectSentence(String s, boolean t)
     {
-        switch(s){
-            case "title":
-                
+        
+        boolean pleaseContinue = false;
+        if(t==true)
+        {
+            System.out.println("testing sentence inspector");
         }
-                
+        
+        String test = "";
+
+        //while( | i < test.length()-1)
+        for(int i = 0; i < s.length(); i++)
+        {
+            
+            if(s.charAt(i) == '<')
+            {
+                test = test + s.charAt(i);
+                pleaseContinue = true;
+            }
+            
+            else if(pleaseContinue)
+            {
+                test = test + s.charAt(i);
+            }
+            
+            if(test.equals("<?"))
+            {
+                System.out.println("this line contains metadata, skip");
+                break;
+            }
+            
+            if(test.equals("<!"))
+            {
+                System.out.println("this line contains metadata, skip");
+                break;
+            }
+            
+            if(pleaseContinue && s.charAt(i) == '>')
+            {
+                break;
+            }
+        }
+        
+        System.out.println("sentence inspected, result is : " + test);
+        
+        switch(test)
+        {
+            case "<title>":
+                System.out.println("this is the title :  " + s);
+                break;
+            case "<div>":
+                System.out.println("this is divisor : " + s);
+                break;
+            case "<br>":
+                System.out.println("this is a line break : " + s);
+                break;
+            case "<head>":
+                System.out.println("this is header : " + s);
+                break;
+        }
     }
 }
