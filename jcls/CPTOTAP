@@ -1,6 +1,8 @@
 //HERC01T JOB (01),'COPY TO TAPE', CLASS=A,MSGCLASS=H
 //******************************************************************
 //* 
+//* CREATED ON 18.9.2019 BY HENRI A. JUVONEN
+//* 
 //* I'M NOT SURE HOW TO DO THIS BUT LET'S TRY COMMENTING A JCL.
 //* THIS JOB WILL COPY A DATASET TO A TAPE AS ADVICED BY 
 //* MOSHIX IN YOUTUBE.
