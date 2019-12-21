@@ -1,3 +1,7 @@
+/*
+ * Any license applies.
+ */
+
 package tests.bankproject;
 
 import exercise.bankproject.DynamicArray;
@@ -15,10 +19,17 @@ import exercise.bankproject.DynamicArray;
  * 
  * edited 16.9.2019
  * reformatting
+ * 
+ * edited on 21.12.2019
+ * introduced a new global variable, boolean t for configuring test scenarios.
+ *
  */
 
 public class DynArrStackTest
 {
+    
+    private static boolean t = true;
+    
     public static void main( String[] args )
     {
         System.out.println("The dynamic array test is about to begin.");

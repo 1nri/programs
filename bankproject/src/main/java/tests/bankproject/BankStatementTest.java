@@ -1,8 +1,7 @@
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+ * Any license applies.
  */
+
 package tests.bankproject;
 
 import exercise.bankproject.BankStatement;
@@ -15,9 +14,14 @@ import java.util.Calendar;
  * 
  * edited 16.9.2019
  * reformatting. works perfectly.
+ * 
+ * edited on 21.12.2019
+ * introduced a new global variable, boolean t for configuring test scenarios.
  */
 public class BankStatementTest 
 {
+    
+    private static boolean t = true;
     
     public static void main(String args[])
     {
@@ -47,7 +51,7 @@ public class BankStatementTest
         String m;
         m = "Juvonen Henri Arimo";
         BankStatement testStatement;
-        testStatement = new BankStatement(a, b, c, d, e, f, g, h, i, j, k, l, m, true);
+        testStatement = new BankStatement(a, b, c, d, e, f, g, h, i, j, k, l, m, t);
         System.out.println(testStatement);
         System.out.println("The bank statement test has finished.");
     }

@@ -1,8 +1,7 @@
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+ * Any license applies.
  */
+
 package exercise.bankproject;
 
 /**
@@ -17,6 +16,10 @@ package exercise.bankproject;
  * edited on 16.9.2019
  * edited the comments, formatted the code. this works perfectly and looks 
  * perfect now, not so much like an exercise.
+ * 
+ * edited 17.9.2019
+ * further enhanced, implemented push() to understand ItemOfDynamicArray classes
+ * better
  */
 public class DynamicArray 
 {
@@ -91,12 +94,12 @@ public class DynamicArray
     }
 
     /**
-     * slide() : returns object from the bottom of the stack ie. slides one out
-     * @return Object
+     * slide() : returns ItemOfDynamicArray from the bottom of the stack ie. slides one out
+     * @return ItemOfDynamicArray
      */
-    public Object slide()
+    public ItemOfDynamicArray slide()
     {
-        Object o = null;
+        ItemOfDynamicArray o = null;
 
         if(!isEmpty())
         {
@@ -123,7 +126,7 @@ public class DynamicArray
     }
 
     /**
-     * pop(): Removes Object x from top of the stack (= from index n-1) and returns it.
+     * pop(): Removes ItemOfDynamicArray x from top of the stack (= from index n-1) and returns it.
      * Returns null is the stack is empty.
      * If after the removal n = N/4 and N >= 2, moves the stack into a new array
      * that is half as large (e.g. divides N by two, creates a new size N array, moves

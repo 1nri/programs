@@ -1,8 +1,7 @@
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+ * Any license applies.
  */
+
 package exercise.bankproject;
 
 import java.io.BufferedWriter;
@@ -19,6 +18,9 @@ import java.util.Scanner;
  * 
  * edited 16.9.2019
  * reformatting
+ * edited 17.9.2019
+ * replaced Object with ItemOfDynamicArray as per the current implementation 
+ * of DynamicArray
  */
 public class JavaProgramOutput 
 {
@@ -34,27 +36,16 @@ public class JavaProgramOutput
         String fname;
         Scanner scan = new Scanner(System.in);
         fname = "/Users/henrijuvonen/Documents/omat_roskat/banking_proj/javaoutputtest.txt";
-        // enter the name of file to create a file and write some content inside
-        
-        /*
-        System.out.print("Enter File Name with Extension (like demo.txt) : ");
-        fname = scan.nextLine();
-        */
         
         try
         {
+            
             // assume the default encoding
             FileWriter fileWriter = new FileWriter(fname);
             
             // always wrap FileWriter in BufferedWriter
             BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
-            
-            // Note that write() method does not automatically
-            // append a newline character
-            
             int len;
-            //System.out.print("How many Sentence/Line you Want to Enter ? ");
-            //len = scan.nextInt();
             len = input.arraySize();
             int i;
             String sentence;
@@ -62,13 +53,13 @@ public class JavaProgramOutput
             //System.out.print("Enter " +len+ " Lines of Sentences followed by Enter : ");
             for(i=0; i<len; i++)
             {
-                //sentence = scan.nextLine();
-                Object test = input.slide();
+                
+                ItemOfDynamicArray test = input.peek(i);
                 if(test != null)
                 {
-                    sentence = test.toString();
+                    sentence = test.toString(true);
                     bufferedWriter.write(sentence);
-                    bufferedWriter.newLine();
+                    //bufferedWriter.newLine();
                 }
             }
             

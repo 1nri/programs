@@ -1,8 +1,7 @@
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+ * Any license applies.
  */
+
 package exercise.bankproject;
 
 import java.io.BufferedReader;
@@ -21,6 +20,9 @@ import java.util.Scanner;
  * reformatting, commenting
  * added alternate use of input where a DynamicArray is returned back to the 
  * calling module
+ * 
+ * edited 17.9.2019
+ * further improvements, added trim()
  */
 public class JavaProgramInput 
 {
@@ -71,26 +73,8 @@ public class JavaProgramInput
             {
                 // you might want to try this at some point:
                 line = line.replaceAll("&nbsp;"," ");
-                
-                /*
-                // testing character extraction
-                for(int i = 0; i < line.length(); i++){
-                    // variable for the character comparison in order to avoid printing all chars
-                    Character toComp;
-                    toComp = line.charAt(i);
-                    System.out.print(line.charAt(i));
-                }
-                */
+                line = line.trim();
                 fileContent.push(line);
-                /*
-                System.out.println();
-                System.out.println("In comparison, this is what the line should look like:");
-                
-                
-                System.out.println(line);
-                System.out.println();
-                lineCounter++;
-                */
             }
             
             /* always close the file after use */
@@ -139,17 +123,35 @@ public class JavaProgramInput
                 String line = bufferedReader.readLine();
                 
                 do {
-                    // you might want to try this at some point:
+                    
+                    /**
+                     * this will make the line a little more pretty
+                     */
                     line = line.replaceAll("&nbsp;"," ");
+                    
+                    // testing how to leave <br/> tags out of output
+                    line = line.replaceAll("<br/>"," ");
+                    
+                    line = line.trim();
                     
                     /**
                      * this will further reduce blank spaces along the stored
                      * lines of xml
                      */
-                    if(!line.equals(" ") && !line.isBlank())
+                    if(!line.equals(" ") && !line.isEmpty())
                     {
+                        /**
+                         * a little testing effort
+                         */
+                        
+                        if (t == true){
+                            System.out.println("pushing a line of content "
+                                    + "from JavaProgramInput, codeline 145");
+                        }
+                        
                         fileContent.push(line);
                     }
+                    
                     line = bufferedReader.readLine();
                 } while (line != null);
                 
