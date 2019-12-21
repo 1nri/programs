@@ -1,8 +1,7 @@
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+ * Any license applies.
  */
+
 package exercise.bankproject;
 
 import java.io.BufferedReader;
@@ -129,14 +128,27 @@ public class JavaProgramInput
                      * this will make the line a little more pretty
                      */
                     line = line.replaceAll("&nbsp;"," ");
+                    
+                    // testing how to leave <br/> tags out of output
+                    line = line.replaceAll("<br/>"," ");
+                    
                     line = line.trim();
                     
                     /**
                      * this will further reduce blank spaces along the stored
                      * lines of xml
                      */
-                    if(!line.equals(" ") && !line.isBlank())
+                    if(!line.equals(" ") && !line.isEmpty())
                     {
+                        /**
+                         * a little testing effort
+                         */
+                        
+                        if (t == true){
+                            System.out.println("pushing a line of content "
+                                    + "from JavaProgramInput, codeline 145");
+                        }
+                        
                         fileContent.push(line);
                     }
                     

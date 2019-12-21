@@ -1,8 +1,7 @@
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+ * Any license applies.
  */
+
 package exercise.bankproject;
 
 /**
@@ -15,8 +14,11 @@ package exercise.bankproject;
  * continued on the lost thought to get this reading xml formatted bank 
  * statements from Aktia.
  * 
- * edited 17.9.2019
+ * edited on 17.9.2019
  * started on the sentence inspector
+ * 
+ * edited on 21.12.2019
+ * continuation of the xml tag interpreter logic
  * 
  */
 public class StatementParser 
@@ -115,9 +117,52 @@ public class StatementParser
             {
                 break;
             }
+            
+            if(test.equals("<br/>") && test.length() == 5){
+                System.out.println("this is a line break : " + s);
+                break;   
+            }
         }
         
         System.out.println("sentence inspected, result is : " + test);
+        
+        /**
+     * set of tags and their respective values to interpret:
+     * 
+     * <title>
+     *      Tiliote - yyyy.mm
+     * </title>
+     * 
+     * <small>
+     *      Lähettäjä
+     *      Vastaanottaja
+     *      Päivämäärä
+     *      Kausi
+     *          <br/>01.08.2017-31.08.2017
+     *      N:o
+     *          8/1
+     *          Käyttötili
+     *      Limiitti
+     *      BIC-koodi
+     * </small>
+     * 
+     * <b>
+     *      TILIOTE
+     *      Sivu
+     * </b>
+     * 
+     * 
+     * 
+     * 
+     * 
+     * 
+     * 
+     * 
+     * 
+     * 
+     * 
+     * 
+     */
         
         switch(test)
         {
@@ -127,7 +172,7 @@ public class StatementParser
             case "<div>":
                 System.out.println("this is divisor : " + s);
                 break;
-            case "<br>":
+            case "<br/>":
                 System.out.println("this is a line break : " + s);
                 break;
             case "<head>":

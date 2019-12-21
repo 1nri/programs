@@ -1,8 +1,7 @@
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+ * Any license applies.
  */
+
 package tests.bankproject;
 
 import exercise.bankproject.SingleTransaction;
@@ -12,10 +11,17 @@ import java.util.Calendar;
  *
  * @author henrijuvonen
  * 
- * edited 16.0.2019
+ * edited 16.9.2019
  * reformatting. works perfectly.
+ * 
+ * edited on 21.12.2019
+ * changed the date of first reformatting, 0 -> 9. probably just a typo.
+ * introduced a new global variable, boolean t for configuring test scenarios.
  */
 public class SingleTransactionTest {
+    
+    private static boolean t = true;
+    
     public static void main(String args[])
     {
         System.out.println("The single transaction test is about to begin.");
@@ -47,8 +53,8 @@ public class SingleTransactionTest {
         int g;
         g = 1;
         // test value for test value (:D)
-        boolean test = false;
-        SingleTransaction testTransaction = new SingleTransaction(a, b, c, d, e, f, g, test);
+        // boolean test = t;
+        SingleTransaction testTransaction = new SingleTransaction(a, b, c, d, e, f, g, t);
         System.out.println(testTransaction.toString());
         System.out.println("The single statement test has finished.");
     }
