@@ -20,20 +20,31 @@ package tests.bankproject;
  */
 public class TestOutputPrinter {
     
-    public void printALine(String s){
+    public static void printALine(String s){
         
-        // for now, this will be just a replacement of System.out.println()
+        // for now, this will be just a replacement of System.out.println().
         // once a better solution comes up, remove the line below
         if(s != null)
             System.out.println(s);
+        
         else
             System.out.println("String to be printed was null, no print.");
         
     }
     
-    public void printRegardlessOfLines(String s){
+    public static void printRegardlessOfLines(String s){
         
-        // for now, this will be just a replacement of System.out.print()
+        // for now, this will be just a replacement of System.out.print().
+        // once a better solution comes up (see above), remove the line below
+        if(s != null)
+            System.out.print(s);
         
+        else
+            System.out.print("String to be printed was null, no print.");
+        
+    }
+
+    public static void printAnEmptyLine(String s) {
+        System.out.println();
     }
 }

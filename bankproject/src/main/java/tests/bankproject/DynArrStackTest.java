@@ -23,26 +23,35 @@ import exercise.bankproject.DynamicArray;
  * edited on 21.12.2019
  * introduced a new global variable, boolean t for configuring test scenarios.
  *
+ * edited on 28.12.2019
+ * began replacing system outputs with an independently made printing routine
+ * TestOutputPrinter.
  */
 
 public class DynArrStackTest
 {
     
     private static boolean t = true;
+    private static String s = null;
     
     public static void main( String[] args )
     {
-        System.out.println("The dynamic array test is about to begin.");
+        s = "The dynamic array test is about to begin.";
+        System.out.println(s);
         DynamicArray S = new DynamicArray();
-        System.out.println( "Initially the array has size " + S.arraySize() );
-        System.out.println( "Let's push the following items on the stack" );
+        s =  "Initially the array has size " + S.arraySize();
+        System.out.println(s);
+        s = "Let's push the following items on the stack";
+        System.out.println(s);
 
         for( int i = 0; i < 10; ++i )
         {
             S.push( new Integer (i) );
-            System.out.print( " " + i );
+            s =  " " + i ;
+            System.out.print(s);
         }
 
+        
         System.out.println();
         System.out.println( "After inserting 10 items, the array has size " +
                 S.arraySize()   + " (should be: 16)" );
