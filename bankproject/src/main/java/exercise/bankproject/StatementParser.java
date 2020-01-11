@@ -20,6 +20,9 @@ package exercise.bankproject;
  * edited on 21.12.2019
  * continuation of the xml tag interpreter logic
  * 
+ * edited on 11.1.2020
+ * continuation of the xml tag interpreter logic
+ * 
  */
 public class StatementParser 
 {
@@ -129,28 +132,53 @@ public class StatementParser
         /**
      * set of tags and their respective values to interpret:
      * 
-     * <title>
-     *      Tiliote - yyyy.mm
-     * </title>
+     * <table> 
+     *      id="header" & class="list" 
+     * </table>
      * 
-     * <small>
-     *      Lähettäjä
-     *      Vastaanottaja
-     *      Päivämäärä
-     *      Kausi
+     * <head>
+     *      <title>
+     *          Tiliote - yyyy.mm
+     *      </title>
+     * </head>
+     * 
+     * <table> 
+     *      id="header" & class="list" 
+     *      <small>
+     *          Lähettäjä
+     *          Vastaanottaja
+     *          Päivämäärä
+     *          Kausi
      *          <br/>01.08.2017-31.08.2017
-     *      N:o
+     *          N:o
      *          8/1
      *          Käyttötili
-     *      Limiitti
-     *      BIC-koodi
-     * </small>
+     *          Limiitti
+     *          BIC-koodi
+     *          <b>
+     *              TILIOTE
+     *              Sivu // not necessarily required
+     *          </b>
+     *      </small>
+     *      <td>
+     *          Asiakkaan tulostama tiliote // not necessarily required
+     *      </td>
      * 
-     * <b>
-     *      TILIOTE
-     *      Sivu
-     * </b>
+     *      // the following might not be that much needed, either
+     *      id="contentHeader"
+     *      <td>
+     *          class="nowrap"
+     *              Kirj.pvm Arvopvm.
+     *      </td>
+     *      <td>
+     *          Selite
+     *          EURO
+     *      </td>
+     * </table>
      * 
+     * <div>
+     *      Aktia Pankki Oyj, Mannerheimintie 14, 00101 Helsinki, Y-tunnus 2181702-8
+     * </div>
      * 
      * 
      * 
