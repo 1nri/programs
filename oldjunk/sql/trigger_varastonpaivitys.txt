@@ -1,0 +1,8 @@
+CREATE OR REPLACE FUNCTION tavarankaytto() RETURNS trigger AS $tavarankaytto$
+BEGIN
+UPDATE tarvike SET varastossa = ((SELECT varastossa FROM tarvike WHERE id = NEW.tarvikeid) -1) WHERE id = NEW.tarvikeid;
+RETURN NEW;
+END
+$tavarankaytto$ LANGUAGE plpgsql;
+CREATE TRIGGER tavarankaytto BEFORE INSERT ON kaytetyttarvikkeet
+FOR EACH ROW EXECUTE PROCEDURE tavarankaytto();
