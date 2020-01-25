@@ -1,0 +1,14 @@
+CREATE OR REPLACE FUNCTION tavarantilaus() RETURNS trigger AS $tavarantilaus$
+BEGIN                   
+IF NEW.varastossa < 0 THEN
+RAISE EXCEPTION 'Varastossa ei voi olla negatiivinen määrä tavaraa %. Tilaa välittömästi lisää ja tarkasta käyttämäsi tarvikkeet.', NEW.nimi;
+ELSIF NEW.varastossa = 0 THEN
+RAISE NOTICE 'Varastossa ei ole enää yhtään tuotetta %. Tilaa lisää!', NEW.nimi;
+END IF;
+RETURN NEW;
+END
+$tavarantilaus$ LANGUAGE plpgsql;
+
+CREATE TRIGGER tavarantilaus
+BEFORE UPDATE ON tarvike
+FOR EACH ROW EXECUTE PROCEDURE tavarantilaus();

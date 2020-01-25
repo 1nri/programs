@@ -1,0 +1,102 @@
+body
+{
+	margin: 0;
+	padding: 3px;
+	font-family: "Helvetica Neue", Helvetica, sans-serif;
+}
+.content
+{
+	max-width: 940px;
+	margin: 0 auto;
+}
+h1, h2
+{
+
+	margin: 3px 3px 3px 3px;
+	text-align: center;
+}
+p
+{
+	/*width: 20em;*/
+	margin: 3px 3px 3px 3px;
+	text-align: center;
+}
+
+p.menu
+{
+	
+}
+
+div
+{
+	padding: 3px 0px;
+	margin: 3px 0px 3px 0px;
+}
+
+div.button
+{
+	border: 1px solid black;
+	background: lightgray;
+	text-align: center;
+	margin: 0.6em 0em 0.6em 0em;
+}
+
+a#button
+{
+	text-decoration: none;
+	color: black;
+}
+
+select
+{
+	width: 100%;
+	text-align: center;
+}
+
+form, td, tr, input
+{
+	padding: 3px 0px;
+	margin: 3px 0px 3px 0px;
+	/*text-align: center;*/
+}
+
+table
+{
+	border-collapse: collapse;
+}
+table, th, input
+{
+	width: 100%;
+}
+
+input.button
+{
+	width: 70%; 
+}
+
+input.radio
+{
+	width: 10%;
+	text-align: left;
+}
+
+#check
+{
+	width: 15px;
+}
+
+#kpl
+{
+	width: 20em;
+}
+
+tr
+{
+	border-bottom: 1px solid black;
+}
+
+footer, i
+{
+	text-align: center;
+	font-size: 0.75em;
+}
