@@ -187,6 +187,6 @@ pg_close($yhteys);
 	<form action="tyonlisays.php" method="post">
 		<input type="submit" name="exit" value="Nollaa istunto" />
 	</form>
-	<footer>Tehnyt Henri A. Juvonen huhtikuussa 2016. Kopiointi sallittu.</footer>
+	<footer>Created by Henri A. Juvonen in April 2016. Copying allowed.</footer>
 </body>
 </html>

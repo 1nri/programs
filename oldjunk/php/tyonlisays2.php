@@ -380,8 +380,6 @@ pg_close($yhteys);
 		<input class="button" type="hidden" name="tallenna" value="jep" />
 		<input class="button" type="submit" value="Lisää työ" />
 	</form>
-	<footer>
-		Tehnyt Henri A. Juvonen huhtikuussa 2016. Kopiointi sallittu.
-	</footer>
+	<footer>Created by Henri A. Juvonen in April 2016. Copying allowed.</footer>
 </body>
 </html>

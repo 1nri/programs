@@ -116,6 +116,6 @@ pg_close($yhteys);
 	<input type="hidden" name="tallenna" value="jep" />
 	<input type="submit" value="Lisää kurssi" />
 	</form>
-
+  <footer>Created by Henri A. Juvonen in April 2016. Copying allowed.</footer>
 </body>
 </html>

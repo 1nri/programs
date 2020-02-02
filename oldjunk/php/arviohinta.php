@@ -393,7 +393,7 @@ if(isset($_POST['tallenna']))
 			</td>
 	    </tr>
 	</table>
-	<!-- Dynaamisesti toimiva listaus tarvikkeille -->
+	<!-- dynamic listing of equipment -->
 	<table id="dataTable" border="0" cellspacing="0" cellpadding="3">
         <tr>
         	<td>Varastossa olevia tarvikkeita</td>
@@ -432,7 +432,7 @@ if(isset($_POST['tallenna']))
 	<input class="button" type="submit" value="Tee hinta-arvio"/>
 	</form>
 
-	<footer>Tehnyt Henri A. Juvonen huhtikuussa 2016. Kopiointi sallittu.</footer>
+	<footer>Created by Henri A. Juvonen in April 2016. Copying allowed.</footer>
 	</div>
 </body>
 </html>
