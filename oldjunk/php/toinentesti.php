@@ -1,4 +1,13 @@
 <html>
+
+/**
+ * @author henrijuvonen
+ * created during the spring of 2016
+ *
+ * modified 2.2.2020
+ * translated comments, started recomposing the structure for further development
+ */
+
 <body>
 <?php
 
@@ -16,7 +25,7 @@ $replacements[0] = 'slow';
 echo preg_replace($patterns, $replacements, $string);
 ?>
 */
- 
+
 //$itemList[] = preg_replace('/-.*/i', "", $temp['item-test']);
 //if($item = strval('test-item'))
 //{

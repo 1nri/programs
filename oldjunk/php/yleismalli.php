@@ -1,29 +1,41 @@
 <?php
 
-// luodaan tietokantayhteys ja ilmoitetaan mahdollisesta virheestä
+/**
+ * @author henrijuvonen
+ * created during the spring of 2016
+ *
+ * modified 2.2.2020
+ * translated comments, started recomposing the structure for further development
+ */
+
+// initiating a connection to database and inform about an error
 
 session_start();
-$y_tiedot = "host=dbstud.sis.uta.fi port=5432 dbname=tiko2016db26 user=a531883 password=_4ntiquE!";
+
+
+// REMEMBER TO GET YOUR CREDENTIALS RIGHT
+$y_tiedot = "host=dbhost.name port=1234 dbname=nameofdb user=dbuser password=password";
 
 if (!$yhteys = pg_connect($y_tiedot))
-   die("Tietokantayhteyden luominen epäonnistui.");
+   die("Not able to connect to database server");
 
-// isset funktiolla jäädään odottamaan syötettä.
-// POST on tapa tuoda tietoa lomaketta (tavallaan kutsutaan lomaketta).
-// Argumentti tallenna saadaan lomakkeen napin nimestä.
+// isset function inspects for an input
+// POST is a method for extracting data from form by calling the form
+// the argument is from the name of the form "tallenna"
 
 if (isset($_POST['tallenna']))
 {
-    // suojataan merkkijonot ennen kyselyn suorittamista
-    // suojataan merkkijonot ennen kyselyn suorittamista
+    // character strings are protected prior to query execution
 
+    // 2.2.2020 henrijuvonen
+    // it should be considered whether to create a new module for the database operation
     $kurssinro = intval($_POST['kurssinro']);
     $etunimi_o = pg_escape_string($_POST['etunimi']);
     $sukunimi_o = pg_escape_string($_POST['sukunimi']);
     $k_nimi = pg_escape_string($_POST['kurssi']);
     $o_pisteet = intval($_POST['pisteet']);
 
-    // jos kenttiin on syötetty jotain, lisätään tiedot kantaan
+    // if there's correct input in the fields, data is added to database
 
     $tiedot_ok = $kurssinro != 0 && trim($etunimi_o) != '' && trim($sukunimi_o) != '' && trim($k_nimi) != '' && $o_pisteet != '';
 
@@ -33,20 +45,24 @@ if (isset($_POST['tallenna']))
 		 VALUES($kurssinro, '$etunimi_o', '$sukunimi_o', '$k_nimi', '$o_pisteet')";
         $paivitys = pg_query($kysely);
 
-        // asetetaan viesti-muuttuja lisäämisen onnistumisen mukaan
-		// lisätään virheilmoitukseen myös virheen syy (pg_last_error)
+        // viesti variable is used as a flag to check for the success of operation
+        // the value contains error message in case of an error
+        // function pg_last_error() is used to extract the connection related error message
 
         if ($paivitys && (pg_affected_rows($paivitys) > 0))
             $viesti = 'Kurssi lisätty!';
         else
             $viesti = 'Kurssia ei lisätty: ' . pg_last_error($yhteys);
     }
+
+    // an error is provided due to incorrect input
+
     else
         $viesti = 'Annetut tiedot puutteelliset - tarkista, ole hyvä!';
 
 }
 
-// suljetaan tietokantayhteys
+// database connection is closed
 
 pg_close($yhteys);
 
@@ -58,14 +74,14 @@ pg_close($yhteys);
  </head>
  <body>
 
-    <!-- Lomake lähetetään samalle sivulle (vrt lomakkeen kutsuminen) -->
+    <!-- the form is sent to the same page (vs. calling the form) -->
     <form action="yleismalli.php" method="post">
 
-    <h2>Kurssin lisäys tietokantaan</h2>
+    <h2>Adding a course to database</h2>
 
     <?php if (isset($viesti)) echo '<p style="color:red">'.$viesti.'</p>'; ?>
 
-	<!--PHP-ohjelmassa viitataan kenttien nimiin (name) -->
+	<!--PHP applications always refer to the names of columns (name)) -->
 	<table border="0" cellspacing="0" cellpadding="3">
 	    <tr>
     	    <td>Kurssinumero</td>
@@ -91,10 +107,11 @@ pg_close($yhteys);
 
 	<br />
 
-	<!-- hidden-kenttää käytetään varotoimena, esim. IE ei välttämättä
-	 lähetä submit-tyyppisen kentön arvoja jos lomake lähetetään
-	 enterin painalluksella. Tätä arvoa tarkkailemalla voidaan
-	 skriptissä helposti päätellä, saavutaanko lomakkeelta. -->
+	<!-- hidden colmn is used a safety measure since e.g IE might not send values
+   in submit type column when the form is sent by pressing Enter key
+
+   by investigating this value a script can be enabled to analyse whether
+   program control originates from form -->
 
 	<input type="hidden" name="tallenna" value="jep" />
 	<input type="submit" value="Lisää kurssi" />

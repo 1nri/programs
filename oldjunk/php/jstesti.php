@@ -1,4 +1,13 @@
 <HTML>
+
+  /**
+   * @author henrijuvonen
+   * created during the spring of 2016
+   *
+   * modified 2.2.2020
+   * translated comments, started recomposing the structure for further development
+   */
+
 <HEAD>
 <meta charset="UTF-8" />
     <TITLE> Add/Remove dynamic rows in HTML table </TITLE>
@@ -33,7 +42,7 @@
 			element2.value = "";
             //element2.content = "<?php echo 'jep'; ?>";
             cell2.appendChild(element2);
-            
+
             var cell3 = row.insertCell(2);
             var element3 = document.createElement("input");
             element3.type = "text";
@@ -76,8 +85,8 @@
         <TR>
 			<TD><INPUT type="checkbox" name="chkbox[]"/>
 			</TD>
-			<TD> 
-				<INPUT type="text" name="txtbox[]" value="" /> 
+			<TD>
+				<INPUT type="text" name="txtbox[]" value="" />
 			</td>
 			<td>
 				<INPUT type="text" name="count[]" value="" />
@@ -93,11 +102,11 @@
  <?php
 
 /*
-foreach($_POST as $name => $content) 
+foreach($_POST as $name => $content)
 { // Most people refer to $key => $value
    echo "The HTML name: $name <br />";
    echo "The content of it: $content <br />";
-   
+
 }
 */
 //$array_txt[] = null;
@@ -119,14 +128,14 @@ if($array_txt[0] != '')
 	foreach($array_txt as $txt)
 	{
 		echo "arvo : $txt <br />";
-		
-		
+
+
 	}
 	$j = 0;
 	foreach($array_count as $cnt)
 	{
 		$i = 0;
-		
+
 		echo "$cnt testi $array_txt[$j] <br />";
 		while($i < $cnt)
 		{

@@ -1,8 +1,16 @@
 <?php
 
+/**
+ * @author henrijuvonen
+ * created during the spring of 2016
+ *
+ * modified 2.2.2020
+ * translated comments, started recomposing the structure for further development
+ */
+
 // luodaan tietokantayhteys ja ilmoitetaan mahdollisesta virheestä
 session_start();
-$y_tiedot = "host=dbstud.sis.uta.fi port=5432 dbname=tiko2016db26 user=a531883 password=_4ntiquE!";
+$y_tiedot = "host=dbhost.name port=1234 dbname=nameofdb user=dbuser password=password";
 
 if (!$yhteys = pg_connect($y_tiedot))
    die("Tietokantayhteyden luominen epäonnistui.");
@@ -27,13 +35,13 @@ else
 if (isset($_POST['tallenna']))
 {
 	$_SESSION['kohde'] = pg_escape_string($_POST['kohde']);
-	
+
 	// kohde tulee olla valittu
 	if($_SESSION['kohde'] != '')
 	{
 		$tulos2 = pg_query("SELECT id FROM kohde WHERE osoite = '$_SESSION['kohde']'");
 		//$tulos2 = pg_query("SELECT pvm FROM kohde WHERE osoite = '$_SESSION['kohde']'");
-		
+
 		if(!$tulos2)
 		{
 			echo 'kohdetta ei löytynyt?';
@@ -43,10 +51,10 @@ if (isset($_POST['tallenna']))
 		{
 			$rivi2 = pg_fetch_row($tulos2);
 			$_SESSION['kohdeid'] = $rivi2[0];
-			$tulos3 = pg_query("SELECT pvm FROM tyo, tyokohde WHERE kohdeid = 
+			$tulos3 = pg_query("SELECT pvm FROM tyo, tyokohde WHERE kohdeid =
 			$_SESSION['kohdeid'] AND tyoid = tyo.id");
 			$options2 = '';
-			
+
 			// päivämäärä tulee olla valittu
 			if($_SESSION['pvm'] != '')
 			{
@@ -57,13 +65,13 @@ if (isset($_POST['tallenna']))
 				}
 		}
 	}
-	
+
 	$_SESSION['pvm'] = pg_escape_string($_POST['pvm']);
-	
+
 	if($_SESSION['pvm'] != '')
 	{
 		$tulos4 = pg_query("SELECT id FROM tyo WHERE pvm = '$_SESSION['pvm']'");
-		
+
 		if(!$tulos4)
 		{
 			echo 'työtä ei löytynyt?'
@@ -75,7 +83,7 @@ if (isset($_POST['tallenna']))
 			$_SESSION['tyoid'] = $rivi4[0];
 		}
 	}
-	
+
 	if($_SESSION['tyoid'] != '')
 	{
 		/*
@@ -107,14 +115,14 @@ pg_close($yhteys);
     <?php if (isset($viesti)) echo '<p style="color:purple">'.$viesti.'</p>'; ?>
 
 	<!-- id |    pvm     |   tyyppi    | tyotyyppi | tunnit
-	PHP-ohjelmassa viitataan kenttien nimiin (name) 
+	PHP-ohjelmassa viitataan kenttien nimiin (name)
 		listaus kohteista
 		listaus kohteessa tehtyjen töiden päivämääristä
 		yksittäinen työ tiettynä päivämääränä
 		työtyyppi(urakka/tunti)
 		työn tyyppi(asennus/suunnittelu)
 		tarvikkeet
-	
+
 	-->
 	<table border="0" cellspacing="0" cellpadding="3">
 	    <tr>
@@ -136,7 +144,7 @@ pg_close($yhteys);
 					<?php echo $options2;?>
 				</select>
 			</td>
-	    </tr>	    
+	    </tr>
 	    <tr>
     	    <td>Työn laatu</td>
     	    <tr></tr>
@@ -162,7 +170,7 @@ pg_close($yhteys);
 
 	<br />
 	<div>
-	<a class="button" href="kohteenlisays.php" onclick="document.location='kohteenlisays.php'; return false">Lisää uusi kohde</a> 
+	<a class="button" href="kohteenlisays.php" onclick="document.location='kohteenlisays.php'; return false">Lisää uusi kohde</a>
 	</div>
 	Lomake aukeaa samassa ikkunassa.
 	<br />

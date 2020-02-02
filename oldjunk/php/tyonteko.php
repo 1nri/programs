@@ -1,9 +1,17 @@
 <?php
 
+/**
+ * @author henrijuvonen
+ * created during the spring of 2016
+ *
+ * modified 2.2.2020
+ * translated comments, started recomposing the structure for further development
+ */
+
 // luodaan tietokantayhteys ja ilmoitetaan mahdollisesta virheestä
 
 session_start();
-$y_tiedot = "host=dbstud.sis.uta.fi port=5432 dbname=tiko2016db26 user=a531883 password=_4ntiquE!";
+$y_tiedot = "host=dbhost.name port=1234 dbname=nameofdb user=dbuser password=password";
 
 if (!$yhteys = pg_connect($y_tiedot))
    die("Tietokantayhteyden luominen epäonnistui.");
@@ -32,39 +40,39 @@ Argumentti tallenna saadaan lomakkeen napin nimestä.
 
 if (isset($_POST['tallenna']))
 {
-    
+
     // tällä hankitaan viimeisimmän työn tunniste, jota lisätään yhdellä uutta työtä lisätessä
-    
+
     $tulos = pg_query("SELECT MAX(id)+1 FROM tyo");
     settype($tyoid, "integer");
-    
+
     // tässä testataan, palauttiko ylempi kysely mitään - jos ei, on kyseessä yrityksen
-    // ensimmäinen työ ja tunniste (id) asetetaan ykköseksi    
+    // ensimmäinen työ ja tunniste (id) asetetaan ykköseksi
     if (!$tulos)
     {
        	$tyoid = 1;
     }
-    
-    // kyselyn palauttaessa viimeisimmän id:n lisättynä yhdellä, annetaan tulos uuden 
+
+    // kyselyn palauttaessa viimeisimmän id:n lisättynä yhdellä, annetaan tulos uuden
     // työn tunnisteeksi (id)
-    
+
     else
     {
     	$rivi = pg_fetch_row($tulos);
        	$tyoid = $rivi[0];
     }
-    
+
     $tyotyyppi = pg_escape_string($_POST['tyypinnimi']);
     $tulos2 = pg_query("SELECT id FROM tyotyyppi WHERE nimi = '$tyotyyppi'");
-    
+
     if($tulos2)
     {
 	    $rivi2 = pg_fetch_row($tulos2);
     	$tyotyyppi = $rivi2[0];
     }
 	// suojataan merkkijonot ennen kyselyn suorittamista
-	//  id |    pvm     |   tyyppi    | tyotyyppi | tunnit 
-    
+	//  id |    pvm     |   tyyppi    | tyotyyppi | tunnit
+
     $kohde = pg_escape_string($_POST['kohde']);
     $pvm = pg_escape_string($_POST['pvm']);
     $tyyppi = pg_escape_string($_POST['tyyppi']);
@@ -72,7 +80,7 @@ if (isset($_POST['tallenna']))
 
     // jos kenttiin on syötetty jotain, lisätään tiedot kantaan
 
-    $tiedot_ok = trim($pvm) != '' && trim($tyyppi) != '' && trim($tyotyyppi) <3 && trim($tyotyyppi) >0 && trim($tunnit) > -1;	
+    $tiedot_ok = trim($pvm) != '' && trim($tyyppi) != '' && trim($tyotyyppi) <3 && trim($tyotyyppi) >0 && trim($tunnit) > -1;
 
     if ($tiedot_ok)
     {
@@ -80,10 +88,10 @@ if (isset($_POST['tallenna']))
     	{
     		$tulos2 = pg_query("SELECT");
     	}
-    	
-    	// INSERT INTO tyo(id, pvm, tyyppi, tyotyyppi, tunnit) 
+
+    	// INSERT INTO tyo(id, pvm, tyyppi, tyotyyppi, tunnit)
     	// VALUES((SELECT MAX(id) FROM tyo) + 1, '03-20-2016', 'asennus', 1, 2);
-    	
+
         $kysely = "INSERT INTO tyo(id, pvm, tyyppi, tyotyyppi, tunnit)
 		 VALUES('$tyoid', '$pvm', '$tyyppi', '$tyotyyppi', '$tunnit')";
         $paivitys = pg_query($kysely);
@@ -94,23 +102,23 @@ if (isset($_POST['tallenna']))
         if ($paivitys && (pg_affected_rows($paivitys) > 0))
         {
             $viesti = 'Työ lisätty! Voit sulkea välilehden tai lisätä muita töitä.';
-        	
+
         	if(trim($kohde) != '')
 			{
 				$tulos3 = pg_query("SELECT id FROM kohde WHERE osoite = '$kohde'");
-			
+
 				if($tulos3)
 				{
 					$rivi3 = pg_fetch_row($tulos3);
 					$kohdeid = $rivi3[0];
-					$kysely3 = "INSERT INTO tyokohde(tyoid, kohdeid) 
+					$kysely3 = "INSERT INTO tyokohde(tyoid, kohdeid)
 					VALUES('$tyoid','$kohdeid')";
 					$paivitys3 = pg_query($kysely3);
-					
+
 					if ($paivitys3 && (pg_affected_rows($paivitys3) > 0))
 						$viesti = 'Työ lisätty kohteeseen! Voit sulkea välilehden tai lisätä toisen kohteen.';
 				}
-			
+
 			}
         }
         else
@@ -174,7 +182,7 @@ footer
     <?php if (isset($viesti)) echo '<p style="color:purple">'.$viesti.'</p>'; ?>
 
 	<!-- id |    pvm     |   tyyppi    | tyotyyppi | tunnit
-	PHP-ohjelmassa viitataan kenttien nimiin (name) 
+	PHP-ohjelmassa viitataan kenttien nimiin (name)
 	-->
 	<table border="0" cellspacing="0" cellpadding="3">
 	    <tr>
@@ -217,7 +225,7 @@ footer
 
 	<br />
 	<div>
-	<a class="button" href="kohteenlisays.php" onclick="document.location='kohteenlisays.php'; return false">Lisää uusi kohde</a> 
+	<a class="button" href="kohteenlisays.php" onclick="document.location='kohteenlisays.php'; return false">Lisää uusi kohde</a>
 	</div>
 	Lomake aukeaa samassa ikkunassa.
 	<br />

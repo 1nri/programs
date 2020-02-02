@@ -1,5 +1,13 @@
-@media screen
-body 
+/**
+ * @author henrijuvonen
+ * created during the spring of 2016
+ *
+ * modified 2.2.2020
+ * translated comments, started recomposing the structure for further development
+ */
+
+ @media screen
+body
 {
 	font-family: "Trebuchet MS", Verdana, sans-serif;
 	margin: 0;

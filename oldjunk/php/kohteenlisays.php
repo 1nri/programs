@@ -1,7 +1,15 @@
 <?php
 
+/**
+ * @author henrijuvonen
+ * created during the spring of 2016
+ *
+ * modified 2.2.2020
+ * translated comments, started recomposing the structure for further development
+ */
+
 // luodaan tietokantayhteys ja ilmoitetaan mahdollisesta virheestä
-$y_tiedot = "host=dbstud.sis.uta.fi port=5432 dbname=tiko2016db26 user=a531883 password=_4ntiquE!";
+$y_tiedot = "host=dbhost.name port=1234 dbname=nameofdb user=dbuser password=password";
 
 if (!$yhteys = pg_connect($y_tiedot))
    die("Tietokantayhteyden luominen epäonnistui.");
@@ -25,7 +33,7 @@ else
 // Argumentti tallenna saadaan lomakkeen napin nimestä.
 if (isset($_POST['tallenna']))
 {
-    
+
     // tällä hankitaan viimeisin kohdeid, jota lisätään yhdellä uutta kohdetta lisätessä
     $tulos = pg_query("SELECT MAX(id)+1 FROM kohde");
     settype($kohdeid, "integer");
@@ -36,52 +44,52 @@ if (isset($_POST['tallenna']))
     {
        	$kohdeid = 1;
     }
-    
-    // kyselyn palauttaessa viimeisimmän id:n lisättynä yhdellä, annetaan tulos uuden 
+
+    // kyselyn palauttaessa viimeisimmän id:n lisättynä yhdellä, annetaan tulos uuden
     // kohteen tunnisteeksi (id)
     else
     {
     	$rivi = pg_fetch_row($tulos);
        	$kohdeid = $rivi[0];
     }
-    
+
 	// suojataan merkkijonot ennen kyselyn suorittamista
     $osoite = pg_escape_string($_POST['osoite']);
     $asiakas = pg_escape_string($_POST['asiakas']);
 
     // jos kenttiin on syötetty jotain, lisätään tiedot kantaan
-    $tiedot_ok = trim($osoite) != '' && $asiakas != '';	
+    $tiedot_ok = trim($osoite) != '' && $asiakas != '';
 
     if ($tiedot_ok)
     {
         $kysely = "INSERT INTO kohde(id, osoite)
 		 VALUES('$kohdeid', '$osoite')";
         $paivitys = pg_query($kysely);
-        
+
         // asetetaan viesti-muuttuja lisäämisen onnistumisen mukaan
 		// lisätään virheilmoitukseen myös virheen syy (pg_last_error)
 
         if ($paivitys && (pg_affected_rows($paivitys) > 0))
         {
-            		
+
 			if(trim($asiakas) != '')
 			{
 				$tulos3 = pg_query("SELECT id FROM asiakas WHERE nimi = '$asiakas'");
-			
+
 				if($tulos3)
 				{
 					$rivi = pg_fetch_row($tulos3);
 					$asiakasid = $rivi[0];
-					$kysely3 = "INSERT INTO omistus(kohdeid, asiakasid) 
+					$kysely3 = "INSERT INTO omistus(kohdeid, asiakasid)
 					VALUES('$kohdeid','$asiakasid')";
 					$paivitys3 = pg_query($kysely3);
-					
+
 					if ($paivitys3 && (pg_affected_rows($paivitys3) > 0))
 						$viesti = 'Kohde lisätty asiakkaalle! Voit sulkea välilehden tai lisätä toisen kohteen.';
 				}
 			}
         }
-        
+
         else
             $viesti = 'Kohdetta ei lisätty: ' . pg_last_error($yhteys);
     }
@@ -116,18 +124,18 @@ pg_close($yhteys);
 		</h1>
 		<a id="button" href="asiakkaanlisays.php" onclick="document.location='asiakkaanlisays.php'; return false">
 			<div class="button">
-				Lisää uusi asiakas 
+				Lisää uusi asiakas
 			</div>
 		</a>
 		<i>Lomake aukeaa samassa ikkunassa.</i>
 		<br />
 	    <!-- Lomake lähetetään samalle sivulle (vrt lomakkeen kutsuminen) -->
 	    <form action="kohteenlisays.php" method="post">
-	
+
 	    <h2>Kohteen lisääminen tietokantaan</h2>
-	
+
 	    <?php if (isset($viesti)) echo '<p style="color:purple">'.$viesti.'</p>'; ?>
-	
+
 		<!--PHP-ohjelmassa viitataan kenttien nimiin (name) -->
 		<table border="0" cellspacing="0" cellpadding="3">
 		    <tr>
@@ -146,15 +154,15 @@ pg_close($yhteys);
 		    </tr>
 		</table>
 		<br />
-	
-		
+
+
 		<br />
-	
+
 		<!-- hidden-kenttää käytetään varotoimena, esim. IE ei välttämättä
 		 lähetä submit-tyyppisen kentön arvoja jos lomake lähetetään
 		 enterin painalluksella. Tätä arvoa tarkkailemalla voidaan
 		 skriptissä helposti päätellä, saavutaanko lomakkeelta. -->
-	
+
 		<input class="button" type="hidden" name="tallenna" value="jep" />
 		<input class="button" type="submit" value="Lisää kohde" />
 		</form>
