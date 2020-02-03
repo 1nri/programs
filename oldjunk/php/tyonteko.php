@@ -1,78 +1,98 @@
 <?php
 
-// luodaan tietokantayhteys ja ilmoitetaan mahdollisesta virheestä
+/**
+ * @author henrijuvonen
+ * created during the spring of 2016
+ *
+ * modified 2.2.2020
+ * translated comments, started recomposing the structure for further development
+ *
+ * modified 3.2.2020
+ * continued translation and recomposure
+ *
+ */
+
+// initiating a connection to database and inform about an error
 
 session_start();
-$y_tiedot = "host=dbstud.sis.uta.fi port=5432 dbname=tiko2016db26 user=a531883 password=_4ntiquE!";
+
+// REMEMBER TO GET YOUR CREDENTIALS RIGHT
+
+$y_tiedot = "host=dbhost.name port=1234 dbname=nameofdb user=dbuser password=password";
 
 if (!$yhteys = pg_connect($y_tiedot))
-   die("Tietokantayhteyden luominen epäonnistui.");
+   die("Not able to connect to database server");
 
 $options = 'test2';
 $options .= '.rivi[0].';
 $tulos4 = pg_query("SELECT osoite FROM kohde");
 if(!$tulos4)
-	$options = 'Lisää ensimmäinen kohde ensin!';
+	$options = 'Add first object first!';
 else
 {
-	$options ="<option>Lisää ilman kohdetta</option>";
+	$options ="<option>Add without object</option>";
 	while ($rivi4 = pg_fetch_row($tulos4))
 	{
 	   	$options .= "<option>$rivi4[0]</option>";
 	}
 	/*
-	$options = 'Lisää ensimmäinen asiakas ensin?';
+	$options = 'Add the first customer first?';
 	*/
 }
 
-/* isset funktiolla jäädään odottamaan syötettä.
-POST on tapa tuoda tietoa lomaketta (tavallaan kutsutaan lomaketta).
-Argumentti tallenna saadaan lomakkeen napin nimestä.
-*/
+// isset function inspects for an input
+// POST is a method for extracting data from form by calling the form
+// the argument is from the name of the form "tallenna"
 
 if (isset($_POST['tallenna']))
 {
-    
-    // tällä hankitaan viimeisimmän työn tunniste, jota lisätään yhdellä uutta työtä lisätessä
-    
+
+    // this function retrieves the identifier of the latest tyo record
+    // the id is simultaneously incremented by one for creating a new tyo record
+
+
     $tulos = pg_query("SELECT MAX(id)+1 FROM tyo");
     settype($tyoid, "integer");
-    
-    // tässä testataan, palauttiko ylempi kysely mitään - jos ei, on kyseessä yrityksen
-    // ensimmäinen työ ja tunniste (id) asetetaan ykköseksi    
+
+    // this tests whether a record was retrieved - if not, we're inserting the
+    // first record and id will be set as one
+
     if (!$tulos)
     {
        	$tyoid = 1;
     }
-    
-    // kyselyn palauttaessa viimeisimmän id:n lisättynä yhdellä, annetaan tulos uuden 
-    // työn tunnisteeksi (id)
-    
+
+    // if a record was retrieved and the id was incremented by one, the value
+    // is used as an id of the new tyo record
+
     else
     {
     	$rivi = pg_fetch_row($tulos);
        	$tyoid = $rivi[0];
     }
-    
+
     $tyotyyppi = pg_escape_string($_POST['tyypinnimi']);
     $tulos2 = pg_query("SELECT id FROM tyotyyppi WHERE nimi = '$tyotyyppi'");
-    
+
     if($tulos2)
     {
 	    $rivi2 = pg_fetch_row($tulos2);
     	$tyotyyppi = $rivi2[0];
     }
-	// suojataan merkkijonot ennen kyselyn suorittamista
-	//  id |    pvm     |   tyyppi    | tyotyyppi | tunnit 
-    
+    // character strings are protected prior to query execution
+
+    // 3.2.2020 henrijuvonen
+    // it should be considered whether to create a new module for the database operation
+    //  id |    pvm     |   tyyppi    | tyotyyppi | tunnit
+
     $kohde = pg_escape_string($_POST['kohde']);
     $pvm = pg_escape_string($_POST['pvm']);
     $tyyppi = pg_escape_string($_POST['tyyppi']);
     $tunnit = intval($_POST['tunnit']);
 
-    // jos kenttiin on syötetty jotain, lisätään tiedot kantaan
+    // if there's correct input in the fields, data is added to database
 
-    $tiedot_ok = trim($pvm) != '' && trim($tyyppi) != '' && trim($tyotyyppi) <3 && trim($tyotyyppi) >0 && trim($tunnit) > -1;	
+    $tiedot_ok = trim($pvm) != '' && trim($tyyppi) != '' && trim($tyotyyppi) <3 && trim($tyotyyppi) >0 && trim($tunnit) > -1;
 
     if ($tiedot_ok)
     {
@@ -80,48 +100,51 @@ if (isset($_POST['tallenna']))
     	{
     		$tulos2 = pg_query("SELECT");
     	}
-    	
-    	// INSERT INTO tyo(id, pvm, tyyppi, tyotyyppi, tunnit) 
+
+    	// INSERT INTO tyo(id, pvm, tyyppi, tyotyyppi, tunnit)
     	// VALUES((SELECT MAX(id) FROM tyo) + 1, '03-20-2016', 'asennus', 1, 2);
-    	
+
         $kysely = "INSERT INTO tyo(id, pvm, tyyppi, tyotyyppi, tunnit)
-		 VALUES('$tyoid', '$pvm', '$tyyppi', '$tyotyyppi', '$tunnit')";
+        VALUES('$tyoid', '$pvm', '$tyyppi', '$tyotyyppi', '$tunnit')";
         $paivitys = pg_query($kysely);
 
-        // asetetaan viesti-muuttuja lisäämisen onnistumisen mukaan
-		// lisätään virheilmoitukseen myös virheen syy (pg_last_error)
+        // viesti variable is used as a flag to check for the success of operation
+        // the value contains error message in case of an error
+        // function pg_last_error() is used to extract the connection related error message
 
         if ($paivitys && (pg_affected_rows($paivitys) > 0))
         {
-            $viesti = 'Työ lisätty! Voit sulkea välilehden tai lisätä muita töitä.';
-        	
+            $viesti = 'The task has been recorded! You may close this window or
+            add other tasks.';
+
         	if(trim($kohde) != '')
 			{
 				$tulos3 = pg_query("SELECT id FROM kohde WHERE osoite = '$kohde'");
-			
+
 				if($tulos3)
 				{
 					$rivi3 = pg_fetch_row($tulos3);
 					$kohdeid = $rivi3[0];
-					$kysely3 = "INSERT INTO tyokohde(tyoid, kohdeid) 
+					$kysely3 = "INSERT INTO tyokohde(tyoid, kohdeid)
 					VALUES('$tyoid','$kohdeid')";
 					$paivitys3 = pg_query($kysely3);
-					
+
 					if ($paivitys3 && (pg_affected_rows($paivitys3) > 0))
-						$viesti = 'Työ lisätty kohteeseen! Voit sulkea välilehden tai lisätä toisen kohteen.';
+						$viesti = 'The work has been recorded for this object! You may
+            close this tab or continue recording tasks to another object.';
 				}
-			
+
 			}
         }
         else
-            $viesti = 'Työtä ei lisätty: ' . pg_last_error($yhteys);
+            $viesti = 'Task was not recorded: ' . pg_last_error($yhteys);
     }
     else
-        $viesti = 'Annetut tiedot puutteelliset - tarkista työ, ole hyvä!' . pg_last_error($yhteys);
+        $viesti = 'Insufficient input - verify the task, please!' . pg_last_error($yhteys);
 
 }
 
-// suljetaan tietokantayhteys
+// close the database connection
 
 pg_close($yhteys);
 
@@ -166,7 +189,7 @@ footer
  </head>
  <body>
 
-    <!-- Lomake lähetetään samalle sivulle (vrt lomakkeen kutsuminen) -->
+    <!-- the form is sent to the same page (vs. calling the form) -->
     <form action="tyonlisays.php" method="post">
 
     <h2>Työn lisääminen tietokantaan</h2>
@@ -174,7 +197,7 @@ footer
     <?php if (isset($viesti)) echo '<p style="color:purple">'.$viesti.'</p>'; ?>
 
 	<!-- id |    pvm     |   tyyppi    | tyotyyppi | tunnit
-	PHP-ohjelmassa viitataan kenttien nimiin (name) 
+  PHP applications always refer to the names of columns (name))
 	-->
 	<table border="0" cellspacing="0" cellpadding="3">
 	    <tr>
@@ -217,16 +240,17 @@ footer
 
 	<br />
 	<div>
-	<a class="button" href="kohteenlisays.php" onclick="document.location='kohteenlisays.php'; return false">Lisää uusi kohde</a> 
+	<a class="button" href="kohteenlisays.php" onclick="document.location='kohteenlisays.php'; return false">Lisää uusi kohde</a>
 	</div>
 	Lomake aukeaa samassa ikkunassa.
 	<br />
 	<br />
 
-	<!-- hidden-kenttää käytetään varotoimena, esim. IE ei välttämättä
-	 lähetä submit-tyyppisen kentön arvoja jos lomake lähetetään
-	 enterin painalluksella. Tätä arvoa tarkkailemalla voidaan
-	 skriptissä helposti päätellä, saavutaanko lomakkeelta. -->
+  <!-- hidden column is used a safety measure since e.g IE might not send values
+   in submit type column when the form is sent by pressing Enter key
+
+   by investigating this value a script can be enabled to analyse whether
+   program control originates from form -->
 
 	<input type="hidden" name="tallenna" value="jep" />
 	<input type="submit" value="Lisää työ" />
@@ -234,6 +258,6 @@ footer
 	<form action="tyonlisays.php" method="post">
 		<input type="submit" name="exit" value="Nollaa istunto" />
 	</form>
-	<footer>Tehnyt Henri A. Juvonen huhtikuussa 2016. Kopiointi sallittu.</footer>
+	<footer>Created by Henri A. Juvonen in April 2016. Copying allowed.</footer>
 </body>
 </html>

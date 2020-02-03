@@ -1,5 +1,13 @@
 <?php
 
+/**
+ * @author henrijuvonen
+ * created during the spring of 2016
+ *
+ * modified 2.2.2020
+ * translated comments, started recomposing the structure for further development
+ */
+
 function laske_alv($hinta, $alv = 24)
 {
 	$alv_osuus = $hinta * $alv/100;
@@ -16,18 +24,19 @@ function laske_ktv($hinta, $ktv = 45)
 	return $kvahennys;
 }
 
-// luodaan tietokantayhteys ja ilmoitetaan mahdollisesta virheestä
+// initiating a connection to database and inform about an error
 session_start();
-$y_tiedot = "host=dbstud.sis.uta.fi port=5432 dbname=tiko2016db26 user=a531883 password=_4ntiquE!";
+$y_tiedot = "host=dbhost.name port=1234 dbname=nameofdb user=dbuser password=password";
 
 if (!$yhteys = pg_connect($y_tiedot))
    die("Tietokantayhteyden luominen epäonnistui.");
 
 pg_query("BEGIN");
-//Lista kohteista käyttäjän valittavaksi
+// List of objects for the user to select
 $osoite_options = '';
 $osoitetulos = pg_query("SELECT osoite FROM kohde");
 
+// checkin that anything exists wihtin the list
 if(!$osoitetulos)
 	$osoite_options = 'Lisää ensimmäinen kohde ensin!';
 
@@ -39,7 +48,7 @@ else
 	}
 }
 
-// Lista tarvikkeita käyttäjän valittavaksi
+// list of equipment for the user to select
 $tarvike_otions = '';
 $tarviketulos = pg_query("SELECT nimi, varastossa FROM tarvike WHERE varastossa > 0");
 
@@ -56,6 +65,7 @@ else
 	}
 }
 
+// different work categories for the user to select
 
 $laatutulos = pg_query("SELECT laatu FROM tyonlaatu");
 if(!$laatutulos)
@@ -71,106 +81,107 @@ else
 	}
 }
 
+// sending the form
 if(isset($_POST['tallenna']))
 {
-	
+
 	$kohde = $_POST['kohde'];
 	$tyyppi = $_POST['tyyppi'];
-	
+
 	if(empty($tyyppi))
 	{
 		$viesti = "Työn laatu jäi valitsematta. ";
 	}
-	
+
 	else
 	{
 		$i = 0;
 		while($i < count($tyyppi))
 		{
-			
+
 			if($tyyppi[$i] == 'suunnittelu')
 				$s_tuntilkm = intval($_POST['s_tunnit']);
-				
+
 			if($tyyppi[$i] == 'asennus')
 				$a_tuntilkm = intval($_POST['a_tunnit']);
-				
+
 			$i++;
 		}
 	}
-	
+
 	$kohdeid_kysely = pg_query("SELECT id FROM kohde WHERE osoite = '$kohde'");
 	if($kohdeid_kysely)
 	{
 		while($tulosrivi = pg_fetch_row($kohdeid_kysely))
 			$kohdeid = $tulosrivi[0];
-			
+
 	}
-	
+
 	else
-		$viesti = 'Annetut kohdetiedot puutteelliset - tarkista, ole hyvä! '. pg_last_error($yhteys);	
-	
-	// taulukko tarvikkeille
+		$viesti = 'Annetut kohdetiedot puutteelliset - tarkista, ole hyvä! '. pg_last_error($yhteys);
+
+	// array structure for the equipment
 	foreach($_POST['tarvike'] as $value)
 		$array_tarv[] = strval($value);
-	
-	// taulukko tarvikkeiden lukumäärille
+
+	// array structure for the quantity of each equipment
 	foreach($_POST['lkm'] as $kpl)
 		$array_lkm[] = intval($kpl);
-	
-	// tarvikkeiden määrä
+
+	// total count of equipment
 	for ($i = 0; $i < count($array_tarv); $i++)
 	{
 		$j = 0;
-		
+
 		while($j < $array_lkm[$i])
 		{
-			
+
 			if($kohdeid != '' && $tyyppi[0] != '' && $laatu[0] != '' && $array_tarv[$i] != ''
 			&& $array_lkm[$i] != '')
 			{
 				$hinta_kysely = pg_query("SELECT hinta FROM tarvike WHERE nimi = '$array_tarv[$i]'");
-				
+
 				if($hinta_kysely)
 				{
 
 					$hintatulos = pg_fetch_row($hinta_kysely);
 					$verottomat_hinnat[] = $hintatulos[0];
-					$verolliset_hinnat[] = $hintatulos[0] + laske_alv($hintatulos[0]);		
+					$verolliset_hinnat[] = $hintatulos[0] + laske_alv($hintatulos[0]);
 				}
-				
+
 			}
-												
+
 			else
 			{
-				
+
 				if($kohdeid == '')
 					$viesti = 'Virhe kohteen valinnassa. ';
-				
+
 				if($tyyppi[0] == '')
 					$viesti = 'Virhe työn laadun valinnassa. ';
-				
+
 				if($laatu == '')
 					$viesti = 'Virhe laskutusperusteen valinnassa. ';
-				
+
 				if($array_tarv[0] == '')
 					$viesti = 'Virhe tarvikkeiden valinnassa. ';
-				
+
 				if($array_lkm[$i] == '')
 					$viesti = 'Virhe tarvikkeiden lukumäärässä?';
-					
+
 				$viesti .= pg_last_error($yhteys);
 			}
 			$j = $j + 1;
 		}
 	}
-	
+
 	$h = 0;
 	$tunnityht = 0;
 	$tuntihinnat = 0;
-	
+
 	if($a_tuntilkm > 0)
 		$tunnityht = $tunnityht + $a_tuntilkm;
-		
+
 	if($s_tuntilkm > 0)
 		$tunnityht = $tunnityht + $s_tuntilkm;
 
@@ -178,7 +189,7 @@ if(isset($_POST['tallenna']))
 	{
 		$tyotyyppi = $_POST['tyypinnimi'];
 		$tyon_hinta_kysely = pg_query("SELECT hinta FROM tyotyyppi WHERE nimi = '$tyotyyppi'");
-		
+
 		if($tyon_hinta_kysely)
 		{
 			$tyonhintatulos = pg_fetch_row($tyon_hinta_kysely);
@@ -186,13 +197,13 @@ if(isset($_POST['tallenna']))
 			$verolliset_hinnat[] = $tyonhintatulos[0];
 			$tuntihinnat = $tuntihinnat + $tyonhintatulos[0];
 		}
-		
+
 		$h = $h + 1;
 	}
-	
+
 	$hinta_yht_veroton = 0;
 	$hinta_yht_verollinen = 0;
-	
+
 	foreach($verottomat_hinnat as $value)
 		$hinta_yht_veroton = $hinta_yht_veroton + $value;
 
@@ -203,25 +214,25 @@ if(isset($_POST['tallenna']))
 	$viesti .= $hinta_yht_veroton . " euroa ennen veroja. <br />";
 	$viesti .= "Veroineen (yleinen alv. 24%) arvioitu hinta on $hinta_yht_verollinen. <br />";
 	$viesti .= "Arvio sisältää seuraavat työt: <br />";
-	
+
 	foreach($tyyppi as $value)
 	{
 		if($value == 'suunnittelu')
 		{
 			$viesti .= "$value, $s_tuntilkm tuntia <br />";
-		}		
+		}
 		if($tyyppi[$i] == 'asennus')
 			$viesti .= "$value, $a_tuntilkm tuntia <br />";;
 	}
-	
+
 	$viesti .= "Arvio sisältää seuraavat tarvikkeet: <br />";
-	
+
 	foreach($array_tarv as $key => $value)
 	{
 		if($array_lkm[$key] > 0)
 			$viesti .= "$value, $array_lkm[$key] kpl <br />";
 	}
-	
+
 	$vahennysarvio = round(laske_ktv($tuntihinnat), 2);
 	$viesti .= "Työstä on mahdollisuus saada kotitalousvähennystä $vahennysarvio euroa.";
 	pg_query("COMMIT");
@@ -229,7 +240,7 @@ if(isset($_POST['tallenna']))
 
 ?>
 
- 
+
 <html lang ="fi">
 <head>
 	<meta charset="UTF-8" />
@@ -254,7 +265,7 @@ if(isset($_POST['tallenna']))
             element1.type = "checkbox";
             element1.name="chkbox[]";
             cell1.appendChild(element1);
-		
+
 			/*
             Tämä toivottavasti luodaan alla olevalla koodilla
             <select name="tarvike[]" value=$options2>
@@ -266,7 +277,7 @@ if(isset($_POST['tallenna']))
             element2.name = "tarvike[]";
             element2.innerHTML = "<?php echo $tarvike_options;?>";
             cell2.appendChild(element2);
-			
+
 			/*
 			Tämä luodaan alla olevalla koodilla.
 			<input type="text" name="lkm" value="lukumäärä" />
@@ -284,18 +295,18 @@ if(isset($_POST['tallenna']))
 
         function deleteRow(tableID)
         {
-            
-            try 
+
+            try
             {
            		var table = document.getElementById(tableID);
 	            var rowCount = table.rows.length;
 
-	            for(var i=0; i<rowCount; i++) 
+	            for(var i=0; i<rowCount; i++)
 	            {
     	            var row = table.rows[i];
         	        var chkbox = row.cells[0].childNodes[0];
-            	    
-            	    if(null != chkbox && true == chkbox.checked) 
+
+            	    if(null != chkbox && true == chkbox.checked)
             	    {
                 	    table.deleteRow(i);
 	                    rowCount--;
@@ -309,7 +320,7 @@ if(isset($_POST['tallenna']))
                 alert(e);
             }
 		}
-		
+
 	</script>
 </head>
 <body>
@@ -325,13 +336,13 @@ if(isset($_POST['tallenna']))
 
     <?php if (isset($viesti)) echo '<p style="color:purple">'.$viesti.'</p>'; ?>
 
-	<!-- PHP-ohjelmassa viitataan kenttien nimiin (name) --> 
+	<!-- PHP-ohjelmassa viitataan kenttien nimiin (name) -->
 	<table border="0" cellspacing="0" cellpadding="3">
 		<tr>
     	    <td>Työkohde</td>
     	    <tr />
     	    <td>
-    	    	<!-- Tämä tuottaa listauksen kannan kaikista 
+    	    	<!-- Tämä tuottaa listauksen kannan kaikista
     	    	ja/tai asiakkaan omistuksessa olevista kohteista -->
     	    	<select name="kohde" value=$osoite_options>
 					<?php echo $osoite_options;?>
@@ -382,7 +393,7 @@ if(isset($_POST['tallenna']))
 			</td>
 	    </tr>
 	</table>
-	<!-- Dynaamisesti toimiva listaus tarvikkeille -->
+	<!-- dynamic listing of equipment -->
 	<table id="dataTable" border="0" cellspacing="0" cellpadding="3">
         <tr>
         	<td>Varastossa olevia tarvikkeita</td>
@@ -403,25 +414,25 @@ if(isset($_POST['tallenna']))
 		</tr>
     </table>
     <p font-size=0.6em>Valitse tarvikerivi vain kun haluat poistaa sen.</p>
-    <!-- Painike, jolla rivejä voidaan lisätä -->	
+    <!-- Painike, jolla rivejä voidaan lisätä -->
  	<input class="button" type="button" value="Lisää rivi" onClick="addRow('dataTable')" />
  	<!-- Painike, jolla rivejä voidaan poistaa -->
- 	<input class="button" type="button" value="Poista valitsemasi rivi(t)" 
+ 	<input class="button" type="button" value="Poista valitsemasi rivi(t)"
  	onClick="deleteRow('dataTable')" />
 	<br />
-	
-	<!-- 
+
+	<!--
 	hidden-kenttää käytetään varotoimena, esim. IE ei välttämättä
 	lähetä submit-tyyppisen kentön arvoja jos lomake lähetetään
 	enterin painalluksella. Tätä arvoa tarkkailemalla voidaan
-	skriptissä helposti päätellä, saavutaanko lomakkeelta. 
+	skriptissä helposti päätellä, saavutaanko lomakkeelta.
 	-->
 	<br />
 	<input class="button" type="hidden" name="tallenna" value="jep" />
 	<input class="button" type="submit" value="Tee hinta-arvio"/>
 	</form>
 
-	<footer>Tehnyt Henri A. Juvonen huhtikuussa 2016. Kopiointi sallittu.</footer>
+	<footer>Created by Henri A. Juvonen in April 2016. Copying allowed.</footer>
 	</div>
 </body>
 </html>

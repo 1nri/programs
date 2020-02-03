@@ -1,8 +1,15 @@
 <?php
 
+/**
+ * @author henrijuvonen
+ * created during the spring of 2016
+ *
+ * modified 2.2.2020
+ * translated comments, started recomposing the structure for further development
+ */
+
 // luodaan tietokantayhteys ja ilmoitetaan mahdollisesta virheestä
-$y_tiedot = "host=dbstud.sis.uta.fi port=5432 dbname=tiko2016db26 user=a531883 
-password=_4ntiquE!";
+$y_tiedot = "host=dbhost.name port=1234 dbname=nameofdb user=dbuser password=password";
 
 if (!$yhteys = pg_connect($y_tiedot))
    die("Tietokantayhteyden luominen epäonnistui.");
@@ -13,19 +20,19 @@ if (!$yhteys = pg_connect($y_tiedot))
 if (isset($_POST['tallenna']))
 {
 	pg_query("BEGIN");
-   	// tällä hankitaan viimeisin asiakasid, jota lisätään yhdellä uutta asiakasta 
+   	// tällä hankitaan viimeisin asiakasid, jota lisätään yhdellä uutta asiakasta
    	// lisätessä
     $tulos = pg_query("SELECT MAX(id)+1 FROM asiakas");
     settype($asiakasid, "integer");
 
-    // tässä testataan, palauttiko ylempi kysely mitään - jos ei, on kyseessä 
-    // yrityksen ensimmäinen asiakas ja tunniste (id) asetetaan ykköseksi    
+    // tässä testataan, palauttiko ylempi kysely mitään - jos ei, on kyseessä
+    // yrityksen ensimmäinen asiakas ja tunniste (id) asetetaan ykköseksi
    	if (!$tulos)
    	{
    	   	$asiakasid = 1;
    	}
 
-   	// kyselyn palauttaessa viimeisimmän id:n lisättynä yhdellä, annetaan tulos uuden 
+   	// kyselyn palauttaessa viimeisimmän id:n lisättynä yhdellä, annetaan tulos uuden
    	// asiakkaan tunnisteeksi (id)
    	else
    	{
@@ -40,13 +47,13 @@ if (isset($_POST['tallenna']))
    	$puh = pg_escape_string($_POST['puhelinnumero']);
 
     // jos kenttiin on syötetty jotain, lisätään tiedot kantaan
-    $tiedot_ok = trim($nimi) != '' && trim($kanta) != '' && trim($tili) != '' && 
-    trim($puh) != '';	
+    $tiedot_ok = trim($nimi) != '' && trim($kanta) != '' && trim($tili) != '' &&
+    trim($puh) != '';
 
     if ($tiedot_ok)
     {
     	// asiakkaan lisäys kantaan
-        $kysely = "INSERT INTO asiakas(id, nimi, kanta_asiakas, tilinumero, puhelinnumero) 
+        $kysely = "INSERT INTO asiakas(id, nimi, kanta_asiakas, tilinumero, puhelinnumero)
         VALUES('$asiakasid', '$nimi', '$kanta', '$tili', '$puh')";
         $paivitys = pg_query($kysely);
 
@@ -69,9 +76,9 @@ else
 
 // suljetaan tietokantayhteys
 pg_close($yhteys);
-	
+
 ?>
-	
+
 <html lang ="fi">
 	<head>
 		<meta charset="UTF-8" />
@@ -86,7 +93,7 @@ pg_close($yhteys);
 		</h1>
 	    <!-- Lomake lähetetään samalle sivulle (vrt lomakkeen kutsuminen) -->
 	    <form action="asiakkaanlisays.php" method="post">
-	
+
 	    	<h2>
 	    		Asiakkaan lisääminen tietokantaan
 	    	</h2>
@@ -99,7 +106,7 @@ pg_close($yhteys);
 		    	    <td>
 		    	    	Asiakkaan etu- ja sukunimi
 		    	    </td>
-		    	    
+
 		    	    <td>
 		    	    	<input type="text" name="nimi" value="" />
 		    	    </td>
@@ -109,14 +116,14 @@ pg_close($yhteys);
 		    	    	Asiakas kanta-asiakas?
 		    	    </td>
 		    	    <td>
-		    	    	
-		    	    	<input class="radio" type="radio" name="kanta_asiakas" value="true"> 
+
+		    	    	<input class="radio" type="radio" name="kanta_asiakas" value="true">
 		    	    	Kyllä
 		    	    	</input>
 		    	    	<br />
 						<input class="radio" type="radio" name="kanta_asiakas" value="false" checked>
 						Ei
-						</input>  
+						</input>
 					</td>
 			    </tr>
 			    <tr>
@@ -136,14 +143,14 @@ pg_close($yhteys);
 			    	</td>
 			    </tr>
 			</table>
-		
+
 			<br />
-			
+
 			<!-- hidden-kenttää käytetään varotoimena, esim. IE ei välttämättä
 			 lähetä submit-tyyppisen kentön arvoja jos lomake lähetetään
 			 enterin painalluksella. Tätä arvoa tarkkailemalla voidaan
 			 skriptissä helposti päätellä, saavutaanko lomakkeelta. -->
-		
+
 			<input type="hidden" name="tallenna" value="jep" />
 			<input type="submit" value="Lisää asiakas" />
 		</form>

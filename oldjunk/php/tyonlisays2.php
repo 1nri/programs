@@ -1,10 +1,24 @@
 <?php
 
-// luodaan tietokantayhteys ja ilmoitetaan mahdollisesta virheestä
+/**
+ * @author henrijuvonen
+ * created during the spring of 2016
+ *
+ * modified 2.2.2020
+ * translated comments, started recomposing the structure for further development
+ *
+ * modified 3.2.2020
+ * continued translation and recomposure
+ *
+ */
+
+// initiating a connection to database and inform about an error
 
 session_start();
-$y_tiedot = "host=dbstud.sis.uta.fi port=5432 dbname=tiko2016db26 user=a531883 
-password=_4ntiquE!";
+
+// REMEMBER TO GET YOUR CREDENTIALS RIGHT
+
+$y_tiedot = "host=dbhost.name port=1234 dbname=nameofdb user=dbuser password=password";
 
 if (!$yhteys = pg_connect($y_tiedot))
    die("Tietokantayhteyden luominen epäonnistui.");
@@ -15,8 +29,8 @@ else
 	$options = '';
 	$options2 = '';
 	$tulos4 = pg_query("SELECT osoite FROM kohde");
-	
-	// Listaus kohteista
+
+	// list of objects
 	if(!$tulos4)
 		$options = 'Lisää ensimmäinen kohde ensin!';
 	else
@@ -26,19 +40,19 @@ else
 		   	$options .= "<option>$rivi4[0]</option>";
 		}
 	}
-	
-	// Listaus työn laadusta (tunti/urakka)
+
+	// list of the types of tasks (tunti/urakka)
 	$tulos6 = pg_query("SELECT laatu FROM tyonlaatu");
 	if($tulos6)
 	{
-		
+
 		while($rivi6 = pg_fetch_row($tulos6))
 		{
 			$laatu[] = $rivi6[0];
 		}
 	}
 
-	// Listaus varaston tarvikkeista
+	// list of equipment in stock
 	$tulos5 = pg_query("SELECT nimi, varastossa FROM tarvike WHERE varastossa > 0");
 	if(!$tulos5)
 		$options2 = 'Lisää ensimmäinen tarvike ensin!';
@@ -50,91 +64,97 @@ else
 	   		$varasto = "varastossa $rivi5[1] kpl";
 		}
 	}
-	
-	// isset funktiolla jäädään odottamaan syötettä.
-	// POST on tapa tuoda tietoa lomaketta (tavallaan kutsutaan lomaketta).
-	// Argumentti tallenna saadaan lomakkeen napin nimestä.
-	if (isset($_POST['tallenna']))
+
+  // isset function inspects for an input
+  // POST is a method for extracting data from form by calling the form
+  // the argument is from the name of the form "tallenna"
+
+  if (isset($_POST['tallenna']))
 	{
-    
-	    // tällä hankitaan viimeisimmän työn tunniste, jota kasvatetaan yhdellä uutta työtä 
-	    // lisätessä
+
+      // this function will retrieve the identifier of latest tyo record and
+      // increments it with one for inserting a new one
+
 	    $tulos = pg_query("SELECT MAX(id)+1 FROM tyo");
 	    settype($tyoid, "integer");
-	    
-   	 	// tässä testataan, palauttiko ylempi kysely mitään - jos ei, on kyseessä yrityksen
-   	 	// ensimmäinen työ ja tunniste (id) asetetaan ykköseksi    
+
+      // this test whether a record was retrieved - in case of no retrieved
+      // record this will be the first one and id will be set as one
+
    	 	if (!$tulos)
    	 	{
        		$tyoid = 1;
     	}
-    
-    	// kyselyn palauttaessa viimeisimmän id:n lisättynä yhdellä, annetaan tulos uuden 
-    	// työn tunnisteeksi (id)
+
+    	// if a record ws retrieved and the identifier was incremented by one the
+      // resulting id is used as an id for the new record
+
     	else
     	{
     		$rivi = pg_fetch_row($tulos);
     	   	$tyoid = $rivi[0];
     	}
-    
+
     	$tyotyyppi = pg_escape_string($_POST['tyypinnimi']);
     	$tulos2 = pg_query("SELECT id FROM tyotyyppi WHERE nimi = '$tyotyyppi'");
-    	
+
     	// tuntityö / urakka
 	    if($tulos2)
     	{
 		    $rivi2 = pg_fetch_row($tulos2);
     		$tyotyyppi = $rivi2[0];
     	}
-		
-		// suojataan merkkijonot ennen kyselyn suorittamista
+
+		// character strings are protected prior to query execution
 	    $kohde = pg_escape_string($_POST['kohde']);
 	    $pvm = pg_escape_string($_POST['pvm']);
 	    $tyyppi = pg_escape_string($_POST['tyyppi']);
 	    $tunnit = intval($_POST['tunnit']);
-	
-	    // jos kenttiin on syötetty jotain, lisätään tiedot kantaan
-	
-	    $tiedot_ok = trim($pvm) != '' && trim($tyyppi) != '' && trim($tyotyyppi) <3 && 
-	    trim($tyotyyppi) >0 && trim($tunnit) > -1;	
-	
+
+	    // if there's correct input in the fields, data is added to database
+
+	    $tiedot_ok = trim($pvm) != '' && trim($tyyppi) != '' && trim($tyotyyppi) <3 &&
+	    trim($tyotyyppi) >0 && trim($tunnit) > -1;
+
 	    if ($tiedot_ok)
 	    {
-    		
+
     		$tulos7 = pg_query("SELECT id FROM tyonlaatu WHERE laatu = '$tyyppi'");
-    		
+
     		if($tulos7)
     		{
     			$rivi7 = pg_fetch_row($tulos7);
     			$tyyppi = $rivi7[0];
-    		
+
     	   		$kysely = "INSERT INTO tyo(id, pvm, tyotyyppi, tunnit, tyyppi)
 				 VALUES('$tyoid', '$pvm', '$tyotyyppi', '$tunnit', '$tyyppi')";
     	    	$paivitys = pg_query($kysely);
 
-		        // asetetaan viesti-muuttuja lisäämisen onnistumisen mukaan
-				// lisätään virheilmoitukseen myös virheen syy (pg_last_error)
+        // viesti variable is used as a flag to check for the success of operation
+        // the value contains error message in case of an error
+        // function pg_last_error() is used to extract the connection related error message
+
 				if ($paivitys && (pg_affected_rows($paivitys) > 0))
 				{
-		        	
+
 		        	if(trim($kohde) != '')
 					{
 						$tulos3 = pg_query("SELECT id FROM kohde WHERE osoite = '$kohde'");
-				
+
 						if($tulos3)
 						{
 							$rivi3 = pg_fetch_row($tulos3);
 							$kohdeid = $rivi3[0];
-							$kysely3 = "INSERT INTO tyokohde(tyoid, kohdeid) 
+							$kysely3 = "INSERT INTO tyokohde(tyoid, kohdeid)
 							VALUES('$tyoid','$kohdeid')";
 							$paivitys3 = pg_query($kysely3);
 
 							if ($paivitys3 && (pg_affected_rows($paivitys3) > 0))
 							{
-								$viesti = 'Työ lisätty kohteeseen! Voit sulkea välilehden tai 
+								$viesti = 'Työ lisätty kohteeseen! Voit sulkea välilehden tai
 								lisätä uuden työn.';
-								
-								
+
+
 								foreach($_POST['tarvike'] as $value)
 								{
 									$array_tarv[] = strval($value);
@@ -143,7 +163,7 @@ else
 								{
 									$array_lkm[] = intval($kpl);
 								}
-							
+
 								// tarvikkeiden määrä
 								for ($i = 0; $i < count($array_tarv); $i++)
 								{
@@ -151,15 +171,15 @@ else
 
 	    							while($j < $array_lkm[$i])
 									{
-										$paivitys4 = pg_query("INSERT INTO kaytetyttarvikkeet(tyoid, 
-										tarvikeid) VALUES('$tyoid', (SELECT id FROM tarvike WHERE 
+										$paivitys4 = pg_query("INSERT INTO kaytetyttarvikkeet(tyoid,
+										tarvikeid) VALUES('$tyoid', (SELECT id FROM tarvike WHERE
 										nimi ='$array_tarv[0]' AND varastossa > 0))");
-										
+
 										if($paivitys4 && pg_affected_rows($paivitys4) > 0)
 										{
 											$j = $j+1;
 											$nicestop = 'yes';
-											$viesti = 'Työ lisätty tarvikkeineen kohteeseen! Voit sulkea 
+											$viesti = 'Työ lisätty tarvikkeineen kohteeseen! Voit sulkea
 											välilehden tai lisätä uuden työn.';
 										}
 										$j = $j + 1;
@@ -177,12 +197,18 @@ else
 	        $viesti = 'Annetut tiedot puutteelliset - tarkista työ, ole hyvä!' . pg_last_error($yhteys);
 	}
 }
+
+// COMMIT or ROLLBACK based on the execution success flag
+// 3.2.2020 henrijuvonen
+// yet again, this should be separated into a new, generic module
+
 if($nicestop == 'yes')
 	pg_query("COMMIT");
 else
 	pg_query("ROLLBACK");
-	
-// suljetaan tietokantayhteys
+
+// database connection is closed
+
 pg_close($yhteys);
 ?>
 
@@ -198,12 +224,12 @@ pg_close($yhteys);
 				var table = document.getElementById(tableID);
 				var rowCount = table.rows.length;
 	            var row = table.insertRow(rowCount);
-	
+
 				/*
-				Tämä luodaan alla olevalla koodilla.
+				this piece of code is introducing the following html structure
 				<td><input type="checkbox" name="chkbox[]"/></td>
 				*/
-			
+
 				var cell1 = row.insertCell(0);
 				cell1.id = "check";
 				var element1 = document.createElement("input");
@@ -211,9 +237,9 @@ pg_close($yhteys);
 				element1.type = "checkbox";
 				element1.name="chkbox[]";
 	            cell1.appendChild(element1);
-			
+
 				/*
-	            Tämä toivottavasti luodaan alla olevalla koodilla
+	            this piece of code is introducing the following html structure
 	            <select name="tarvike[]" value=$options2>
 					<?php echo $options2;?>
 				</select>
@@ -224,12 +250,12 @@ pg_close($yhteys);
 				element2.name = "tarvike[]";
 	            element2.innerHTML = "<?php echo $options2;?>";
 	            cell2.appendChild(element2);
-			
+
 				/*
-				Tämä luodaan alla olevalla koodilla.
+				this piece of code is introducing the following html structure
 				<input type="text" name="lkm" value="lukumäärä" />
 				*/
-			
+
 				var cell3 = row.insertCell(2);
 				cell3.id = "kpl";
             	var element3 = document.createElement("input");
@@ -262,7 +288,7 @@ pg_close($yhteys);
 	                alert(e);
 	            }
 	        }
-	
+
     	</script>
 	</head>
 	<body>
@@ -271,19 +297,20 @@ pg_close($yhteys);
 		</h1>
 		<a id="button" href="kohteenlisays.php" onclick="document.location='kohteenlisays.php'; return false">
 			<div class="button">
-				Lisää uusi kohde 
+				Lisää uusi kohde
 			</div>
 		</a>
 		<i>Lomake aukeaa samassa ikkunassa.</i>
 		<br />
-	    <!-- Lomake lähetetään samalle sivulle (vrt lomakkeen kutsuminen) -->
+	    <!-- the form is sent to the same page (vs. calling the form) -->
+
 	    <form action="tyonlisays2.php" method="post">
-	
+
 	    <h2>Työn lisääminen tietokantaan</h2>
-	
+
 	    <?php if (isset($viesti)) echo '<p style="color:purple">'.$viesti.'</p>'; ?>
 
-		<!-- PHP-ohjelmassa viitataan kenttien nimiin (name) -->
+		<!-- PHP applications always refer to the names of columns (name) -->
 		<table border="0" cellspacing="0" cellpadding="3">
 	    	<tr>
     	    	<td>
@@ -353,28 +380,25 @@ pg_close($yhteys);
 				</td>
 			</tr>
     	</table>
-	
-		<p font-size=0.6em>Valitse rivi vain kun haluat poistaa sen.</p>	
+
+		<p font-size=0.6em>Valitse rivi vain kun haluat poistaa sen.</p>
 	 	<input class="button" type="button" value="Lisää rivi" onClick="addRow('dataTable')" />
-	 	<input class="button" type="button" value="Poista valitsemasi rivi(t)" 
+	 	<input class="button" type="button" value="Poista valitsemasi rivi(t)"
  		onClick="deleteRow('dataTable')" />
 
 		<br />
-		
+
 		<br />
-	
-		<!-- 
-		hidden-kenttää käytetään varotoimena, esim. IE ei välttämättä
-		lähetä submit-tyyppisen kentön arvoja jos lomake lähetetään
-		enterin painalluksella. Tätä arvoa tarkkailemalla voidaan
-		skriptissä helposti päätellä, saavutaanko lomakkeelta. 
-		-->
-	
+
+    <!-- hidden column is used a safety measure since e.g IE might not send values
+     in submit type column when the form is sent by pressing Enter key
+
+     by investigating this value a script can be enabled to analyse whether
+     program control originates from form -->
+
 		<input class="button" type="hidden" name="tallenna" value="jep" />
 		<input class="button" type="submit" value="Lisää työ" />
 	</form>
-	<footer>
-		Tehnyt Henri A. Juvonen huhtikuussa 2016. Kopiointi sallittu.
-	</footer>
+	<footer>Created by Henri A. Juvonen in April 2016. Copying allowed.</footer>
 </body>
 </html>

@@ -1,3 +1,11 @@
+/**
+ * @author henrijuvonen
+ * created during the spring of 2016
+ *
+ * modified 2.2.2020
+ * translated comments, started recomposing the structure for further development
+ */
+
 body
 {
 	margin: 0;
@@ -24,7 +32,7 @@ p
 
 p.menu
 {
-	
+
 }
 
 div
@@ -71,7 +79,7 @@ table, th, input
 
 input.button
 {
-	width: 70%; 
+	width: 70%;
 }
 
 input.radio
