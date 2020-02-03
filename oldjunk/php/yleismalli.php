@@ -6,14 +6,18 @@
  *
  * modified 2.2.2020
  * translated comments, started recomposing the structure for further development
+ *
+ * modified 3.2.2020
+ * continued translation and recomposure
+ *
  */
 
 // initiating a connection to database and inform about an error
 
 session_start();
 
-
 // REMEMBER TO GET YOUR CREDENTIALS RIGHT
+
 $y_tiedot = "host=dbhost.name port=1234 dbname=nameofdb user=dbuser password=password";
 
 if (!$yhteys = pg_connect($y_tiedot))
@@ -58,7 +62,7 @@ if (isset($_POST['tallenna']))
     // an error is provided due to incorrect input
 
     else
-        $viesti = 'Annetut tiedot puutteelliset - tarkista, ole hyvä!';
+        $viesti = 'Insufficient input - verify the task, please!';
 
 }
 
@@ -81,7 +85,7 @@ pg_close($yhteys);
 
     <?php if (isset($viesti)) echo '<p style="color:red">'.$viesti.'</p>'; ?>
 
-	<!--PHP applications always refer to the names of columns (name)) -->
+	<!--PHP applications always refer to the names of columns (name) -->
 	<table border="0" cellspacing="0" cellpadding="3">
 	    <tr>
     	    <td>Kurssinumero</td>
@@ -107,7 +111,7 @@ pg_close($yhteys);
 
 	<br />
 
-	<!-- hidden colmn is used a safety measure since e.g IE might not send values
+	<!-- hidden column is used a safety measure since e.g IE might not send values
    in submit type column when the form is sent by pressing Enter key
 
    by investigating this value a script can be enabled to analyse whether
