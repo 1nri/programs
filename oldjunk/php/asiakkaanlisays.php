@@ -8,51 +8,49 @@
  * translated comments, started recomposing the structure for further development
  */
 
-// luodaan tietokantayhteys ja ilmoitetaan mahdollisesta virheestä
+// initiating a connection to database and inform about an error
 $y_tiedot = "host=dbhost.name port=1234 dbname=nameofdb user=dbuser password=password";
 
 if (!$yhteys = pg_connect($y_tiedot))
    die("Tietokantayhteyden luominen epäonnistui.");
 
-// isset funktiolla jäädään odottamaan syötettä.
-// POST on tapa tuoda tietoa lomaketta (tavallaan kutsutaan lomaketta).
-// Argumentti tallenna saadaan lomakkeen napin nimestä.
+// sending the form
 if (isset($_POST['tallenna']))
 {
 	pg_query("BEGIN");
-   	// tällä hankitaan viimeisin asiakasid, jota lisätään yhdellä uutta asiakasta
-   	// lisätessä
+   	// this acquires the latest asiakasid which will be appended with one while
+   	// inserting a new customer
     $tulos = pg_query("SELECT MAX(id)+1 FROM asiakas");
     settype($asiakasid, "integer");
 
-    // tässä testataan, palauttiko ylempi kysely mitään - jos ei, on kyseessä
-    // yrityksen ensimmäinen asiakas ja tunniste (id) asetetaan ykköseksi
+    // this tests did the earlier query return anything
+    // if not, this is the first customer of the company and id is set to one
    	if (!$tulos)
    	{
    	   	$asiakasid = 1;
    	}
 
-   	// kyselyn palauttaessa viimeisimmän id:n lisättynä yhdellä, annetaan tulos uuden
-   	// asiakkaan tunnisteeksi (id)
+   	// in case the query did return a value appended with one,
+    // the result will be used as an id for the new customer to be inserted
    	else
    	{
    		$rivi = pg_fetch_row($tulos);
    	   	$asiakasid = $rivi[0];
    	}
 
-	// suojataan merkkijonot ennen kyselyn suorittamista
+	// strings of char will be protected prior to query execution
    	$nimi = pg_escape_string($_POST['nimi']);
    	$kanta = pg_escape_string($_POST['kanta_asiakas']);
    	$tili = pg_escape_string($_POST['tilinumero']);
    	$puh = pg_escape_string($_POST['puhelinnumero']);
 
-    // jos kenttiin on syötetty jotain, lisätään tiedot kantaan
+    // if the input is correct, the data will inserted to database
     $tiedot_ok = trim($nimi) != '' && trim($kanta) != '' && trim($tili) != '' &&
     trim($puh) != '';
 
     if ($tiedot_ok)
     {
-    	// asiakkaan lisäys kantaan
+    	// inserting a customer
         $kysely = "INSERT INTO asiakas(id, nimi, kanta_asiakas, tilinumero, puhelinnumero)
         VALUES('$asiakasid', '$nimi', '$kanta', '$tili', '$puh')";
         $paivitys = pg_query($kysely);
