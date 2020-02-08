@@ -6,9 +6,14 @@
  *
  * modified 2.2.2020
  * translated comments, started recomposing the structure for further development
+ *
+ * modified 7.2. & 8.2.
+ * translated further
+ *
  */
 
-// luodaan tietokantayhteys ja ilmoitetaan mahdollisesta virheestä
+// initiating a connection to database and inform about an error
+// REMEMBER TO GET YOUR CREDENTIALS RIGHT
 
 session_start();
 $y_tiedot = "host=dbhost.name port=1234 dbname=nameofdb user=dbuser password=password";
@@ -16,9 +21,9 @@ $y_tiedot = "host=dbhost.name port=1234 dbname=nameofdb user=dbuser password=pas
 if (!$yhteys = pg_connect($y_tiedot))
    die("Tietokantayhteyden luominen epäonnistui.");
 
-// isset funktiolla jäädään odottamaan syötettä.
-// POST on tapa tuoda tietoa lomaketta (tavallaan kutsutaan lomaketta).
-// Argumentti tallenna saadaan lomakkeen napin nimestä.
+   // isset function inspects for an input
+   // POST is a method for extracting data from form by calling the form
+   // the argument is from the name of the form "tallenna"
 
 if (isset($_POST['tallenna']))
 {
@@ -45,14 +50,15 @@ if (isset($_POST['tallenna']))
        	$tarvikeid = $rivi[0];
     }
 
-	// suojataan merkkijonot ennen kyselyn suorittamista
+    // character strings are protected prior to query execution
     // id |    nimi    | hinta | veroprosentti | varastossa
     $nimi = pg_escape_string($_POST['nimi']);
     $hinta = intval($_POST['hinta']);
     $veroprosentti = intval($_POST['vero']);
     $varastossa = intval($_POST['varasto']);
 
-    // jos kenttiin on syötetty jotain, lisätään tiedot kantaan
+    // if there's correct input in the fields, data is added to database
+
     $tiedot_ok = trim($nimi) != '' && $hinta >= 0 && $veroprosentti >= 0 && $varastossa >= 0;
 
     if ($tiedot_ok)
@@ -61,13 +67,16 @@ if (isset($_POST['tallenna']))
         VALUES('$tarvikeid', '$nimi', '$hinta', '$veroprosentti', '$varastossa');";
         $paivitys = pg_query($kysely);
 
-        // asetetaan viesti-muuttuja lisäämisen onnistumisen mukaan
-		// lisätään virheilmoitukseen myös virheen syy (pg_last_error)
+        // viesti variable is used as a flag to check for the success of operation
+        // the value contains error message in case of an error
+        // function pg_last_error() is used to extract the connection related error message
         if ($paivitys && (pg_affected_rows($paivitys) > 0))
             $viesti = 'Tarvike lisätty varastoon! Voit sulkea välilehden tai lisätä toisen tarvikkeen.';
+            // an error is provided due to unsuccessful execution
         else
             $viesti = 'Tarviketta ei lisätty: ' . pg_last_error($yhteys);
     }
+    // an error is provided due to incorrect input
     else
         $viesti = 'Annetut tiedot puutteelliset - tarkista, ole hyvä!';
 
@@ -77,7 +86,7 @@ if($viesti == 'Tarvike lisätty varastoon! Voit sulkea välilehden tai lisätä 
 	pg_query("COMMIT");
 else
 	pg_query("ROLLBACK");
-// suljetaan tietokantayhteys
+// database connection is closed
 
 pg_close($yhteys);
 
@@ -95,13 +104,13 @@ pg_close($yhteys);
 		<h1>
 			Tmi Sähkötärsky
 		</h1>
-    	<!-- Lomake lähetetään samalle sivulle (vrt lomakkeen kutsuminen) -->
+    	<!-- the form is sent to the same page (vs. calling the form) -->
     	<form action="tarvikkeenlisays.php" method="post">
         <h2>Tarvikkeen lisääminen tietokantaan</h2>
 
     	<?php if (isset($viesti)) echo '<p style="color:purple">'.$viesti.'</p>'; ?>
 
-		<!--PHP-ohjelmassa viitataan kenttien nimiin (name) -->
+		<!-- PHP applications always refer to the names of columns (name) -->
 		<table border="0" cellspacing="0" cellpadding="3">
 		    <tr>
     		    <td>Tarvikkeen nimi</td>
@@ -135,10 +144,11 @@ pg_close($yhteys);
 
 		<br />
 
-		<!-- hidden-kenttää käytetään varotoimena, esim. IE ei välttämättä
-		 lähetä submit-tyyppisen kentön arvoja jos lomake lähetetään
-		 enterin painalluksella. Tätä arvoa tarkkailemalla voidaan
-		 skriptissä helposti päätellä, saavutaanko lomakkeelta. -->
+		<!-- hidden column is used a safety measure since e.g IE might not send values
+     in submit type column when the form is sent by pressing Enter key
+
+     by investigating this value a script can be enabled to analyse whether
+     program control originates from form -->
 
 		<input type="hidden" name="tallenna" value="jep" />
 		<input type="submit" value="Lisää tarvike" />

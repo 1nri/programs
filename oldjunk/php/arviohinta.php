@@ -6,6 +6,9 @@
  *
  * modified 2.2.2020
  * translated comments, started recomposing the structure for further development
+ *
+ * modified 7.2. & 8.2.
+ * translated further
  */
 
 function laske_alv($hinta, $alv = 24)

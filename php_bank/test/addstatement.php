@@ -1,21 +1,19 @@
 <?php
 
 /**
- * @author henrijuvonen
- * created during the spring of 2016
- *
- * modified 2.2.2020
- * translated comments, started recomposing the structure for further development
- *
- * modified 7.2. & 8.2.
- * translated further
- */
+* @author henrijuvonen
+* created in 2020
+*
+* modified from another piece of code on 8.2.2020
+* started recomposing the structure for further development
+*/
 
 // initiating a connection to database and inform about an error
+// REMEMBER TO GET YOUR CREDENTIALS RIGHT
 $y_tiedot = "host=dbhost.name port=1234 dbname=nameofdb user=dbuser password=password";
 
 if (!$yhteys = pg_connect($y_tiedot))
-   die("Tietokantayhteyden luominen epäonnistui.");
+   die("Connection unsuccessful, could not connect to database.");
 
 // sending the form
 if (isset($_POST['tallenna']))

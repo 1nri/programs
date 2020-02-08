@@ -6,9 +6,14 @@
  *
  * modified 2.2.2020
  * translated comments, started recomposing the structure for further development
+ *
+ * modified 7.2. & 8.2.
+ * translated further
  */
 
-// luodaan tietokantayhteys ja ilmoitetaan mahdollisesta virheestä
+// initiating a connection to database and inform about an error
+// REMEMBER TO GET YOUR CREDENTIALS RIGHT
+
 $y_tiedot = "host=dbhost.name port=1234 dbname=nameofdb user=dbuser password=password";
 
 if (!$yhteys = pg_connect($y_tiedot))
@@ -28,36 +33,38 @@ else
 	}
 }
 
-// isset funktiolla jäädään odottamaan syötettä.
-// POST on tapa tuoda tietoa lomaketta (tavallaan kutsutaan lomaketta).
-// Argumentti tallenna saadaan lomakkeen napin nimestä.
+// isset function inspects for an input
+// POST is a method for extracting data from form by calling the form
+// the argument is from the name of the form "tallenna"
 if (isset($_POST['tallenna']))
 {
 
-    // tällä hankitaan viimeisin kohdeid, jota lisätään yhdellä uutta kohdetta lisätessä
+    // this will acquire the latest value for kohdeid which will be appended
+    // with on as we are preparing for inserting a new record
     $tulos = pg_query("SELECT MAX(id)+1 FROM kohde");
     settype($kohdeid, "integer");
 
-    // tässä testataan, palauttiko ylempi kysely mitään - jos ei, on kyseessä yrityksen
-    // ensimmäinen kohde ja tunniste (id) asetetaan ykköseksi
+    // this tests whether the above query returned a value - in case not, the
+    // record to be inserted is the first record and this value should be set
+    // accordingly
     if (!$tulos)
     {
        	$kohdeid = 1;
     }
 
-    // kyselyn palauttaessa viimeisimmän id:n lisättynä yhdellä, annetaan tulos uuden
-    // kohteen tunnisteeksi (id)
+    // if the above query returns tha latest id appended with one, the result
+    // will be used as the id for this record to be inserted
     else
     {
     	$rivi = pg_fetch_row($tulos);
        	$kohdeid = $rivi[0];
     }
 
-	// suojataan merkkijonot ennen kyselyn suorittamista
+	// character strings are protected prior to query execution
     $osoite = pg_escape_string($_POST['osoite']);
     $asiakas = pg_escape_string($_POST['asiakas']);
 
-    // jos kenttiin on syötetty jotain, lisätään tiedot kantaan
+    // if there's correct input in the fields, data is added to database
     $tiedot_ok = trim($osoite) != '' && $asiakas != '';
 
     if ($tiedot_ok)
@@ -66,8 +73,9 @@ if (isset($_POST['tallenna']))
 		 VALUES('$kohdeid', '$osoite')";
         $paivitys = pg_query($kysely);
 
-        // asetetaan viesti-muuttuja lisäämisen onnistumisen mukaan
-		// lisätään virheilmoitukseen myös virheen syy (pg_last_error)
+        // viesti variable is used as a flag to check for the success of operation
+        // the value contains error message in case of an error
+        // function pg_last_error() is used to extract the connection related error message
 
         if ($paivitys && (pg_affected_rows($paivitys) > 0))
         {
@@ -89,16 +97,17 @@ if (isset($_POST['tallenna']))
 				}
 			}
         }
-
+        // an error is provided due to unsuccessful execution
         else
             $viesti = 'Kohdetta ei lisätty: ' . pg_last_error($yhteys);
     }
+    // an error is provided due to incorrect input
     else
         $viesti = 'Annetut tiedot puutteelliset - tarkista, ole hyvä! '. pg_last_error($yhteys);
 
 }
 
-// suljetaan tietokantayhteys
+// database connection is closed
 if($viesti == 'Kohde lisätty asiakkaalle! Voit sulkea välilehden tai lisätä toisen kohteen.')
 {
 	pg_query("COMMIT");
@@ -129,14 +138,14 @@ pg_close($yhteys);
 		</a>
 		<i>Lomake aukeaa samassa ikkunassa.</i>
 		<br />
-	    <!-- Lomake lähetetään samalle sivulle (vrt lomakkeen kutsuminen) -->
+	    <!-- the form is sent to the same page (vs. calling the form) -->
 	    <form action="kohteenlisays.php" method="post">
 
 	    <h2>Kohteen lisääminen tietokantaan</h2>
 
 	    <?php if (isset($viesti)) echo '<p style="color:purple">'.$viesti.'</p>'; ?>
 
-		<!--PHP-ohjelmassa viitataan kenttien nimiin (name) -->
+		<!-- PHP applications always refer to the names of columns (name) -->
 		<table border="0" cellspacing="0" cellpadding="3">
 		    <tr>
 	    	    <td>Kohteen osoite (Katu nro postinro kaupunki)</td>
@@ -158,10 +167,11 @@ pg_close($yhteys);
 
 		<br />
 
-		<!-- hidden-kenttää käytetään varotoimena, esim. IE ei välttämättä
-		 lähetä submit-tyyppisen kentön arvoja jos lomake lähetetään
-		 enterin painalluksella. Tätä arvoa tarkkailemalla voidaan
-		 skriptissä helposti päätellä, saavutaanko lomakkeelta. -->
+		<!-- hidden column is used a safety measure since e.g IE might not send values
+     in submit type column when the form is sent by pressing Enter key
+
+     by investigating this value a script can be enabled to analyse whether
+     program control originates from form -->
 
 		<input class="button" type="hidden" name="tallenna" value="jep" />
 		<input class="button" type="submit" value="Lisää kohde" />
