@@ -6,6 +6,9 @@
  *
  * modified 2.2.2020
  * translated comments, started recomposing the structure for further development
+ *
+ * modified 7.2. & 8.2.
+ * translated further
  */
 
 // initiating a connection to database and inform about an error
@@ -55,8 +58,9 @@ if (isset($_POST['tallenna']))
         VALUES('$asiakasid', '$nimi', '$kanta', '$tili', '$puh')";
         $paivitys = pg_query($kysely);
 
-        // asetetaan viesti-muuttuja lisäämisen onnistumisen mukaan
-		// lisätään virheilmoitukseen myös virheen syy (pg_last_error)
+        // viesti variable is used as a flag to check for the success of operation
+        // the value contains error message in case of an error
+        // function pg_last_error() is used to extract the connection related error message
         if ($paivitys && (pg_affected_rows($paivitys) > 0))
             $viesti = 'Asiakas lisätty! Voit sulkea välilehden tai lisätä toisen asiakkaan.';
         else
@@ -72,7 +76,7 @@ if($viesti == 'Asiakas lisätty! Voit sulkea välilehden tai lisätä toisen asi
 else
 	pg_query("ROLLBACK");
 
-// suljetaan tietokantayhteys
+// database connection is closed
 pg_close($yhteys);
 
 ?>
@@ -89,7 +93,7 @@ pg_close($yhteys);
 		<h1>
 			Tmi Sähkötärsky
 		</h1>
-	    <!-- Lomake lähetetään samalle sivulle (vrt lomakkeen kutsuminen) -->
+	    <!-- the form is sent to the same page (vs. calling the form) -->
 	    <form action="asiakkaanlisays.php" method="post">
 
 	    	<h2>
@@ -98,7 +102,7 @@ pg_close($yhteys);
 
 		    <?php if (isset($viesti)) echo '<p style="color:purple">'.$viesti.'</p>'; ?>
 
-			<!--PHP-ohjelmassa viitataan kenttien nimiin (name) -->
+			<!-- PHP applications always refer to the names of columns (name) -->
 			<table border="0" cellspacing="0" cellpadding="3">
 			    <tr>
 		    	    <td>
@@ -144,10 +148,10 @@ pg_close($yhteys);
 
 			<br />
 
-			<!-- hidden-kenttää käytetään varotoimena, esim. IE ei välttämättä
-			 lähetä submit-tyyppisen kentön arvoja jos lomake lähetetään
-			 enterin painalluksella. Tätä arvoa tarkkailemalla voidaan
-			 skriptissä helposti päätellä, saavutaanko lomakkeelta. -->
+			<!-- hidden column is used a safety measure since e.g IE might not send values
+       in submit type column when the form is sent by pressing Enter key
+       by investigating this value a script can be enabled to analyse whether
+       program control originates from form -->
 
 			<input type="hidden" name="tallenna" value="jep" />
 			<input type="submit" value="Lisää asiakas" />

@@ -6,9 +6,14 @@
  *
  * modified 2.2.2020
  * translated comments, started recomposing the structure for further development
+ *
+ * modified 7.2. & 8.2.
+ * translated further
+ *
  */
 
-// luodaan tietokantayhteys ja ilmoitetaan mahdollisesta virheestä
+// initiating a connection to database and inform about an error
+// REMEMBER TO GET YOUR CREDENTIALS RIGHT
 
 session_start();
 $y_tiedot = "host=dbhost.name port=1234 dbname=nameofdb user=dbuser password=password";
@@ -16,9 +21,9 @@ $y_tiedot = "host=dbhost.name port=1234 dbname=nameofdb user=dbuser password=pas
 if (!$yhteys = pg_connect($y_tiedot))
    die("Tietokantayhteyden luominen epäonnistui.");
 
-// isset funktiolla jäädään odottamaan syötettä.
-// POST on tapa tuoda tietoa lomaketta (tavallaan kutsutaan lomaketta).
-// Argumentti tallenna saadaan lomakkeen napin nimestä.
+   // isset function inspects for an input
+   // POST is a method for extracting data from form by calling the form
+   // the argument is from the name of the form "tallenna"
 
 if (isset($_POST['tallenna']))
 {

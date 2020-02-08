@@ -10,6 +10,9 @@
  * modified 3.2.2020
  * continued translation and recomposure
  *
+ * modified 7.2. & 8.2.
+ * translated further
+ *
  */
 
 // initiating a connection to database and inform about an error
@@ -85,7 +88,7 @@ pg_close($yhteys);
 
     <?php if (isset($viesti)) echo '<p style="color:red">'.$viesti.'</p>'; ?>
 
-	<!--PHP applications always refer to the names of columns (name) -->
+	<!-- PHP applications always refer to the names of columns (name) -->
 	<table border="0" cellspacing="0" cellpadding="3">
 	    <tr>
     	    <td>Kurssinumero</td>

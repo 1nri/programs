@@ -6,6 +6,9 @@
    *
    * modified 2.2.2020
    * translated comments, started recomposing the structure for further development
+   *
+   * modified 7.2. & 8.2.
+   * translated further
    */
 
 <HEAD>
@@ -98,7 +101,7 @@
  <INPUT type="button" value="Lisää rivi" onClick="addRow('dataTable')" />
  <INPUT type="button" value="Poista valitsemasi rivi(t)" onClick="deleteRow('dataTable')" />
 
- <p text-size=0.6em>Valitse rivi vain kun haluat poistaa sen.</p>
+ <p text-size=0.6em>Choose a row only when you'd like to remove it.</p>
  <?php
 
 /*
