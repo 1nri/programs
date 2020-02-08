@@ -255,7 +255,7 @@ if(isset($_POST['tallenna']))
             var row = table.insertRow(rowCount);
 
 			/*
-			Tämä luodaan alla olevalla koodilla.
+			This will be implemented with the piece of code below
 			<td><input type="checkbox" name="chkbox[]"/></td>
 			*/
             var cell1 = row.insertCell(0);
@@ -267,7 +267,7 @@ if(isset($_POST['tallenna']))
             cell1.appendChild(element1);
 
 			/*
-            Tämä toivottavasti luodaan alla olevalla koodilla
+            This will hopefully be implemented with the piece of code below
             <select name="tarvike[]" value=$options2>
 				<?php echo $options2;?>
 			</select>
@@ -279,7 +279,7 @@ if(isset($_POST['tallenna']))
             cell2.appendChild(element2);
 
 			/*
-			Tämä luodaan alla olevalla koodilla.
+			This will be implemented with the piece of code below
 			<input type="text" name="lkm" value="lukumäärä" />
 			*/
 			var cell3 = row.insertCell(2);
@@ -328,7 +328,7 @@ if(isset($_POST['tallenna']))
 	<h1>
 		Tmi Sähkötärsky
 	</h1>
-	<!-- Lomake lähetetään samalle sivulle (vrt lomakkeen kutsuminen) -->
+	<!-- Form is sent to the same page (compare to calling the form) -->
 	<form class="box1" action="arviohinta.php" method="post">
     <h2>
     	Työn hinta-arvio
@@ -336,14 +336,14 @@ if(isset($_POST['tallenna']))
 
     <?php if (isset($viesti)) echo '<p style="color:purple">'.$viesti.'</p>'; ?>
 
-	<!-- PHP-ohjelmassa viitataan kenttien nimiin (name) -->
+	<!-- PHP application refer to column names (name) -->
 	<table border="0" cellspacing="0" cellpadding="3">
 		<tr>
     	    <td>Työkohde</td>
     	    <tr />
     	    <td>
-    	    	<!-- Tämä tuottaa listauksen kannan kaikista
-    	    	ja/tai asiakkaan omistuksessa olevista kohteista -->
+    	    	<!-- This produces a listing of all object(s) owned by a
+				customer -->
     	    	<select name="kohde" value=$osoite_options>
 					<?php echo $osoite_options;?>
 				</select>
@@ -403,7 +403,8 @@ if(isset($_POST['tallenna']))
 				<input id="check" type="checkbox" name="chkbox[]"/>
 			</td>
 			<td>
-				<!-- Tämä tuottaa listauksen kannassa olevista tarvikkeista -->
+				<!-- This produces a listing of all equipment stored in the
+				database -->
 				<select name="tarvike[]" value=$tarvike_options>
 					<?php echo $tarvike_options; ?>
 				</select>
@@ -414,18 +415,19 @@ if(isset($_POST['tallenna']))
 		</tr>
     </table>
     <p font-size=0.6em>Valitse tarvikerivi vain kun haluat poistaa sen.</p>
-    <!-- Painike, jolla rivejä voidaan lisätä -->
+    <!-- Button for adding rows -->
  	<input class="button" type="button" value="Lisää rivi" onClick="addRow('dataTable')" />
- 	<!-- Painike, jolla rivejä voidaan poistaa -->
+ 	<!-- Button for removing rows -->
  	<input class="button" type="button" value="Poista valitsemasi rivi(t)"
  	onClick="deleteRow('dataTable')" />
 	<br />
 
 	<!--
-	hidden-kenttää käytetään varotoimena, esim. IE ei välttämättä
-	lähetä submit-tyyppisen kentön arvoja jos lomake lähetetään
-	enterin painalluksella. Tätä arvoa tarkkailemalla voidaan
-	skriptissä helposti päätellä, saavutaanko lomakkeelta.
+	hidden column is used a safety measure since e.g IE might not send values
+   in submit type column when the form is sent by pressing Enter key
+
+   by investigating this value a script can be enabled to analyse whether
+   program control originates from form
 	-->
 	<br />
 	<input class="button" type="hidden" name="tallenna" value="jep" />
